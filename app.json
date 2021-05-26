@@ -1,0 +1,48 @@
+{
+    "name": "TgTwitterStreamer",
+    "description": "RealTime Integration from Twitter to Telegram.",
+    "repository": "https://github.com/New-dev0/TgTwitterStreamer",
+    "logo": "https://telegra.ph/file/845054582c76963620311.jpg",
+    "keywords": ["telegram", "twitter", "tweepy", "telegram bot", "twitter bot"],
+    "env": {
+        "BOT_TOKEN": {
+            "description": "BOT TOKEN of your Bot. Get it from @BotFather.",
+            "value": ""
+        },
+        "API_ID": {
+            "description": "Get it from https://my.telegram.org/apps ",
+            "value": ""
+        },
+        "API_HASH": {
+            "description": "Get it from https://my.telegram.org/apps",
+            "value": ""
+        },
+        "CONSUMER_KEY": {
+            "description": "Read New-dev0.github.io/tgtwitterbot to Know About it.",
+            "value": ""
+        },
+        "TRACK_USERS": {
+            "description": "Username/id of Users to Track.",
+            "value": ""
+        },
+        "TO_CHAT": {
+            "description": "CHAT ID of Group/Channel where to Recieve Tweets.",
+            "value": ""
+        },
+        "CONSUMER_SECRET": {
+            "description": "Read New-dev0.github.io/tgtwitterbot to Know About it.",
+            "value": ""
+        },
+        "ACCESS_TOKEN": {
+            "description": "Read New-dev0.github.io/tgtwitterbot to Know About it.",
+            "value": ""
+        },
+        "ACCESS_TOKEN_SECRET": {
+            "description": "Read New-dev0.github.io/tgtwitterbot to Know About it.",
+            "value": ""
+        }
+    },
+    "buildpacks": [{
+        "url": "heroku/python"
+    }]
+}
