@@ -1,10 +1,10 @@
 # TgTwitterStreamer
 
-A Bot to get RealTime Tweets to a Specific Chats from Desired Persons on Twitter to Telegram Cht.
+A Bot to get RealTime Tweets to a Specific Chats from Desired Persons on Twitter to Telegram Chat.
 <br>
 
 * For Getting ENV's Refer this [Link](https://New-dev0.Github.io/TgTwitterBot) !
-* All Enviroment Variables can be found in `[env.sample](https://github.com/New-dev0/TgTwitterStreamer/blob/main/env.sample0)` !
+* All Enviroment Variables can be found in [`env.sample`](https://github.com/New-dev0/TgTwitterStreamer/blob/main/env.sample0) !
 
 
 ## Deploy to Heroku
