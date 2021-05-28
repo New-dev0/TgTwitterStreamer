@@ -1,8 +1,6 @@
 # Telegram - Twitter - Bot
 # Github.com/New-dev0/TgTwitterStreamer
-# CopyLeft AGPLv3 (C) 2020 The Authors
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# GNU General Public License v3.0
 
 
 import tweepy
