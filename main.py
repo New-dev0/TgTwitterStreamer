@@ -4,6 +4,7 @@ from Configs import Var
 from telethon import TelegramClient
 from telethon.tl.custom import Button
 
+from tweepy.asynchronous import AsyncStream
 import logging
 logging.basicConfig(level=logging.INFO)
 
@@ -27,7 +28,7 @@ for userid in Var.TRACK_USERS.split(" "):
         print(e)
 
 
-class TgStreamer(tweepy.asynchronous.AsyncStream):
+class TgStreamer(AsyncStream):
     async def on_connect(self):
         print("<<<---||| Stream Connected |||--->>>")
     async def on_status(self, status):
