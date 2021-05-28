@@ -36,15 +36,15 @@ class TgStreamer(AsyncStream):
         user = tweet["user"]
         if not str(user["id"]) in TRACK_IDS:
             return
-        print(user["id"])
+        if tweet["retweeted"]:
+            return
         text = f"[{user['name']}](https://twitter.com/{user['screen_name']})"
-        mn = " ReTweeted :"
-        if not tweet["retweeted"]:
-            mn = " Tweeted :"
+        mn = " Tweeted :"
         text += mn + "\n\n" + f"`{tweet['text']}`"
         url = f"https://twitter.com/{user['screen_name']}/status/{tweet['id']}"
         await Client.send_message(
-            Var.TO_CHAT, text,
+            Var.TO_CHAT,
+            text,
             link_preview=False,
             buttons=Button.url(text="View 🔗", url=url))
     
