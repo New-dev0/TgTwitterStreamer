@@ -36,7 +36,7 @@ class TgStreamer(AsyncStream):
         user = tweet["user"]
         if not str(user["id"]) in TRACK_IDS:
             return
-        if tweet["retweeted"]:
+        if tweet["text"].startswith("RT "):
             return
         text = f"[{user['name']}](https://twitter.com/{user['screen_name']})"
         mn = " Tweeted :"
