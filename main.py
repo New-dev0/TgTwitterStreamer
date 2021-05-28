@@ -7,9 +7,6 @@ from telethon.tl.custom import Button
 import logging
 logging.basicConfig(level=logging.INFO)
 
-auth = tweepy.OAuthHandler(Var.CONSUMER_KEY, Var.CONSUMER_SECRET)
-auth.set_access_token(Var.ACCESS_TOKEN, Var.ACCESS_TOKEN_SECRET)
-api = tweepy.API(auth)
 
 Client = TelegramClient("TG-Twitter Streamer", Var.API_ID,
                 Var.API_HASH).start(bot_token=Var.BOT_TOKEN)
@@ -19,14 +16,14 @@ print("Setting Up Bot !")
 TRACK_IDS = []
 for userid in Var.TRACK_USERS.split(" "):
     try:
-        user = api.get_user(userid)._json
+        user = api.get_user(screen_name=userid)._json
         TRACK_IDS.append(str(user["id"]))
         print(f"Added {user['screen_name']} to TRACK - LIST !")
     except Exception as e:
         print(e)
 
 
-class TgStreamer(tweepy.StreamListener):
+class TgStreamer(tweepy.Stream):
     def on_status(self, status):
         tweet = status._json
         user = tweet["user"]
@@ -47,8 +44,7 @@ class TgStreamer(tweepy.StreamListener):
 
 
 if __name__ == "__main__":
-    Stream = TgStreamer()
-    myStream = tweepy.Stream(auth=api.auth, listener=Stream)
-    myStream.filter(follow=TRACK_IDS, is_async=True)
+    Stream = TgStreamer(Var.CONSUMER_KEY,Var.CONSUMER_SECRET,Var.ACCESS_TOKEN,Var.ACCESS_TOKEN_SECRET)
+    Stream.filter(follow=TRACK_IDS, is_async=True)
     with Client:
         Client.run_until_disconnected()  # Running Client
