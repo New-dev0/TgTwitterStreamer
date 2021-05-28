@@ -11,6 +11,10 @@ logging.basicConfig(level=logging.INFO)
 Client = TelegramClient("TG-Twitter Streamer", Var.API_ID,
                 Var.API_HASH).start(bot_token=Var.BOT_TOKEN)
 
+auth = tweepy.OAuthHandler(Var.CONSUMER_KEY, Var.CONSUMER_SECRET)
+auth.set_access_token(Var.ACCESS_TOKEN, Var.ACCESS_TOKEN_SECRET)
+api = tweepy.API(auth)
+
 
 print("Setting Up Bot !")
 TRACK_IDS = []
