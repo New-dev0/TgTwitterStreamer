@@ -32,11 +32,12 @@ class TgStreamer(AsyncStream):
     async def on_connect(self):
         print("<<<---||| Stream Connected |||--->>>")
     async def on_status(self, status):
-        print(status)
         tweet = status._json
         user = tweet["user"]
+        print("Users", user)
         if not user["id"] in TRACK_IDS:
             return
+        print(user["id"])
         text = f"[{user['name']}](https://twitter.com/{user['screen_name']})"
         mn = " ReTweeted :"
         if not tweet["retweeted"]:
