@@ -55,4 +55,5 @@ if __name__ == "__main__":
     Stream = TgStreamer()
     myStream = tweepy.Stream(auth=api.auth, listener=Stream)
     myStream.filter(follow=TRACK_IDS, is_async=True)
-    Client.run()  # Running Client
+    with Client:
+        Client.run_until_disconnected()  # Running Client
