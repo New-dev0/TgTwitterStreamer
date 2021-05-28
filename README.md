@@ -10,7 +10,7 @@
 
 ## Deploy to Heroku
 - [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
-<br><br>
+<br>
 
 ## Other Required Vars
 - `TRACK_USERS` - usernames for Person on Twitter, you want to Track/get Tweets of. Seperated by space 
