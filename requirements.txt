@@ -1,4 +1,6 @@
-pyrogram
-tgcrypto
-tweepy
+telethon
+cryptg
+aiohttp
+oauthlib
+git+https://github.com/New-dev0/Tweepy.git
 python-decouple
