@@ -34,7 +34,6 @@ class TgStreamer(AsyncStream):
     async def on_status(self, status):
         tweet = status._json
         user = tweet["user"]
-        print("Users", user)
         if not user["id"] in TRACK_IDS:
             return
         print(user["id"])
