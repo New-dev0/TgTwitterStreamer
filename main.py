@@ -1,7 +1,7 @@
 import tweepy
 from Configs import Var
 
-from telethon.sync import TelegramClient
+from telethon import TelegramClient
 from telethon.tl.custom import Button
 
 import logging
@@ -27,9 +27,10 @@ for userid in Var.TRACK_USERS.split(" "):
         print(e)
 
 
-class TgStreamer(tweepy.Stream):
-
-    def on_status(self, status):
+class TgStreamer(tweepy.asynchronous.AsyncStream):
+    async def on_connect(self):
+        print("<<<---||| Stream Connected |||--->>>")
+    async def on_status(self, status):
         tweet = status._json
         user = tweet["user"]
         if not user["id"] in TRACK_IDS:
@@ -40,20 +41,20 @@ class TgStreamer(tweepy.Stream):
             mn = " Tweeted :"
         text += mn + "\n\n" + f"`{tweet['text']}`"
         url = f"https://twitter.com/{user['screen_name']}/status/{tweet['id']}"
-        Client.send_message(
+        await Client.send_message(
             Var.TO_CHAT, text,
             link_preview=False,
             buttons=Button.url(text="View 🔗", url=url))
-    def on_connection_error(self):
-        print("Connection Error, Disconnecting...")
-        self.disconnect()
     
-    def on_error(self, status_code):
-        print(self, status_code)
+    async def on_connection_error(self):
+        print("Connection Error, Disconnecting...")
+    
+    async def on_exception(self, exception):
+        print(exception)
 
 
 if __name__ == "__main__":
     Stream = TgStreamer(Var.CONSUMER_KEY,Var.CONSUMER_SECRET,Var.ACCESS_TOKEN,Var.ACCESS_TOKEN_SECRET)
-    Stream.filter(track=TRACK_IDS)
+    Stream.filter(follow=TRACK_IDS)
     with Client:
         Client.run_until_disconnected()  # Running Client
