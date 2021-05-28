@@ -32,6 +32,7 @@ class TgStreamer(AsyncStream):
     async def on_connect(self):
         print("<<<---||| Stream Connected |||--->>>")
     async def on_status(self, status):
+        print(status)
         tweet = status._json
         user = tweet["user"]
         if not user["id"] in TRACK_IDS:
