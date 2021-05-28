@@ -28,6 +28,7 @@ for userid in Var.TRACK_USERS.split(" "):
 
 
 class TgStreamer(tweepy.Stream):
+
     def on_status(self, status):
         tweet = status._json
         user = tweet["user"]
@@ -43,12 +44,16 @@ class TgStreamer(tweepy.Stream):
             Var.TO_CHAT, text,
             link_preview=False,
             buttons=Button.url(text="View 🔗", url=url))
+    def on_connection_error(self):
+        print("Connection Error, Disconnecting...")
+        self.disconnect()
+    
     def on_error(self, status_code):
         print(self, status_code)
 
 
 if __name__ == "__main__":
     Stream = TgStreamer(Var.CONSUMER_KEY,Var.CONSUMER_SECRET,Var.ACCESS_TOKEN,Var.ACCESS_TOKEN_SECRET)
-    Stream.filter(follow=TRACK_IDS)
+    Stream.filter(track=TRACK_IDS)
     with Client:
         Client.run_until_disconnected()  # Running Client
