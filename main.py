@@ -46,11 +46,6 @@ class TgStreamer(tweepy.StreamListener):
         print(self, status_code)
 
 
-@Client.on(events.NewMessage(pattern=r"/start"))
-async def sendme(event):
-    await event.reply("Hi, I am Alive !")
-
-
 if __name__ == "__main__":
     Stream = TgStreamer()
     myStream = tweepy.Stream(auth=api.auth, listener=Stream)
