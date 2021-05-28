@@ -1,4 +1,4 @@
-pyrogram
-tgcrypto
+telethon
+cryptg
 tweepy
 python-decouple
