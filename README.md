@@ -1,5 +1,7 @@
 # TgTwitterStreamer
 
+# <p align="center"><a href="https://github.com/New-dev0/TgTwitterStreamer"><img src="https://github-readme-stats.vercel.app/api/pin?username=TeamUltroid&show_icons=true&theme=dracula&hide_border=true&repo=TgTwitterStreamer"></a></p>
+
 A Bot to get RealTime Tweets to a Specific Chats from Desired Persons on Twitter to Telegram Chat.
 <br>
 
@@ -15,9 +17,6 @@ A Bot to get RealTime Tweets to a Specific Chats from Desired Persons on Twitter
 - `TRACK_USERS` - usernames for Person on Twitter, you want to Track/get Tweets of. Seperated by space if more. ex - "newdev0 drdo"
 - `TO_CHAT` - Id of Chat, where you want to recieve Tweets.
 
-   
-## Warning
- - Tweepy Twitter Streamer doesnt Stop Itself, used to get continous TWEETS, may Raise Heroku Warning and give Problem.
 
 ## Thanks to
 - [Dan](https://github.com/delivrance) for [Pyrogram](https://github.com/pyrogram/pyrogram)
