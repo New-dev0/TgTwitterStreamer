@@ -45,6 +45,6 @@ class TgStreamer(tweepy.Stream):
 
 if __name__ == "__main__":
     Stream = TgStreamer(Var.CONSUMER_KEY,Var.CONSUMER_SECRET,Var.ACCESS_TOKEN,Var.ACCESS_TOKEN_SECRET)
-    Stream.filter(follow=TRACK_IDS, is_async=True)
+    Stream.filter(follow=TRACK_IDS)
     with Client:
         Client.run_until_disconnected()  # Running Client
