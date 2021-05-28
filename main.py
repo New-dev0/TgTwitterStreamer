@@ -1,11 +1,8 @@
 import tweepy
 from Configs import Var
 
-from pyrogram import Client, filters
-from pyrogram.types import (
-    InlineKeyboardMarkup, 
-    InlineKeyboardButton
-)
+from telethon.sync import TelegramClient
+from telethon.tl.custom import Button
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -14,9 +11,8 @@ auth = tweepy.OAuthHandler(Var.CONSUMER_KEY, Var.CONSUMER_SECRET)
 auth.set_access_token(Var.ACCESS_TOKEN, Var.ACCESS_TOKEN_SECRET)
 api = tweepy.API(auth)
 
-Client = Client("TG-Twitter Streamer", Var.API_ID,
-                Var.API_HASH,
-                bot_token=Var.BOT_TOKEN)
+Client = TelegramClient("TG-Twitter Streamer", Var.API_ID,
+                Var.API_HASH).start(bot_token=Var.BOT_TOKEN)
 
 
 print("Setting Up Bot !")
@@ -44,19 +40,15 @@ class TgStreamer(tweepy.StreamListener):
         url = f"https://twitter.com/{user['screen_name']}/status/{tweet['id']}"
         Client.send_message(
             Var.TO_CHAT, text,
-            disable_web_page_preview=True,
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text="View 🔗", url=url)]
-                ])
-        )
-
+            link_preview=False,
+            buttons=Button.url(text="View 🔗", url=url))
     def on_error(self, status_code):
-        print(status_code)
+        print(self, status_code)
 
 
-@Client.on_message(filters.command("start") & filters.chat(int(Var.TO_CHAT)))
-async def sendme(client, message):
-    await message.reply_text("Hi, I am Alive !")
+@Client.on(events.NewMessage(pattern=r"/start"))
+async def sendme(event):
+    await event.reply("Hi, I am Alive !")
 
 
 if __name__ == "__main__":
