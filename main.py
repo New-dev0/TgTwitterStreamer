@@ -50,6 +50,7 @@ class TgStreamer(AsyncStream):
         user = tweet["user"]
         if not str(user["id"]) in TRACK_IDS:
             return
+        container = tweet
         entities = container.get('entities', {}).get('media')
         extended_entities = container.get('extended_entities', {}).get('media')
         extended_tweet = container.get('extended_tweet', {}).get('entities', {}).get('media')
