@@ -40,7 +40,6 @@ class TgStreamer(AsyncStream):
     def get_urls(self, media):
         if not media:
             return []
-
         return [m['media_url_https'] for m in media if m['type'] == 'photo']
 
     async def on_status(self, status):
@@ -50,16 +49,18 @@ class TgStreamer(AsyncStream):
         user = tweet["user"]
         if not str(user["id"]) in TRACK_IDS:
             return
-        container = tweet
-        entities = container.get('entities', {}).get('media')
-        extended_entities = container.get('extended_entities', {}).get('media')
-        extended_tweet = container.get('extended_tweet', {}).get('entities', {}).get('media')
-        all_urls = set()
-        for media in (entities, extended_entities, extended_tweet):
-            urls = self.get_urls(media)
-            all_urls.update(set(urls))
-        for url in all_urls:
-            print (url)
+        try:
+            entities = tweet.get('entities', {}).get('media')
+            extended_entities = tweet.get('extended_entities', {}).get('media')
+            extended_tweet = tweet.get('extended_tweet', {}).get('entities', {}).get('media')
+            all_urls = set()
+            for media in (entities, extended_entities, extended_tweet):
+                urls = self.get_urls(media)
+                print(urls)
+                all_urls.update(set(urls))
+            print(all_urls)
+        except BaseException:
+            pass
         text = f"[{user['name']}](https://twitter.com/{user['screen_name']})"
         mn = " Tweeted :"
         text += mn + "\n\n" + f"`{tweet['text']}`"
