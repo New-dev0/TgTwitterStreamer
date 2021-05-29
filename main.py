@@ -75,15 +75,14 @@ class TgStreamer(AsyncStream):
             if pic:
                 await Client.send_message(
                     chat,
-                    file=pic,
                     text,
+                    file=pic,
                     buttons=Button.url(text="View 🔗", url=url),
                 )
             else:
                 await Client.send_message(
                     chat,
                     text,
-                    link_preview=False,
                     buttons=Button.url(text="View 🔗", url=url),
                 )
     async def on_connection_error(self):
