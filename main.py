@@ -95,8 +95,7 @@ class TgStreamer(AsyncStream):
                                 chat,
                                 text,
                                 buttons=Button.url(text="View 🔗", url=url),
-                            )
-                        
+                        )
                 else:
                     await Client.send_message(
                         chat,
