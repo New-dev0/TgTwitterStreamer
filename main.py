@@ -95,15 +95,15 @@ class TgStreamer(AsyncStream):
 @Client.on(events.NewMessage(pattern=r"/start"))
 async def startmsg(event):
     await event.reply(
-        "Hi, I am Alive !",
+        file="ult.webp",
         buttons=[
+            [Button.inline("Hello Sir i'm Alive")],
             [
                 Button.url(
-                    "TgTwitterStreamer",
+                    "Source",
                     url="https://github.com/New-dev0/TgTwitterStreamer",
-                )
-            ],
-            [Button.url("Support Group", url="t.me/FutureCodesChat")],
+                ),
+            Button.url("Support Group", url="t.me/FutureCodesChat")],
         ],
     )
 
