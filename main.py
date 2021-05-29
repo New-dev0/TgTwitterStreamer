@@ -39,6 +39,7 @@ class TgStreamer(AsyncStream):
 
     async def on_status(self, status):
         tweet = status._json
+        print(tweet)
         user = tweet["user"]
         if not str(user["id"]) in TRACK_IDS:
             return
@@ -49,7 +50,7 @@ class TgStreamer(AsyncStream):
         text += mn + "\n\n" + f"`{tweet['text']}`"
         url = f"https://twitter.com/{user['screen_name']}/status/{tweet['id']}"
         await Client.send_message(
-            int(Var.TO_CHAT),
+            Var.TO_CHAT,
             text,
             link_preview=False,
             buttons=Button.url(text="View 🔗", url=url),
