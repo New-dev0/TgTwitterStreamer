@@ -78,12 +78,25 @@ class TgStreamer(AsyncStream):
                 pass
             try:
                 if pic:
-                    await Client.send_message(
-                        chat,
-                        text,
-                        file=pic,
-                        buttons=Button.url(text="View 🔗", url=url),
-                    )
+                    if len(pic) == 1:
+                        for pic in pic:
+                            await Client.send_message(
+                                chat,
+                                text,
+                                file=pic,
+                                buttons=Button.url(text="View 🔗", url=url),
+                            )
+                    else:
+                        await Client.send_file(
+                                chat,
+                                file=pic,
+                        )
+                        await Client.send_message(
+                                chat,
+                                text,
+                                buttons=Button.url(text="View 🔗", url=url),
+                            )
+                        
                 else:
                     await Client.send_message(
                         chat,
