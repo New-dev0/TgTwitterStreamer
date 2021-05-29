@@ -44,7 +44,9 @@ class TgStreamer(AsyncStream):
         user = tweet["user"]
         if not str(user["id"]) in TRACK_IDS:
             return
-        print(tweet)
+        if 'media' in tweet.entities:
+            for image in tweet.entities['media']:
+               print(image)
         text = f"[{user['name']}](https://twitter.com/{user['screen_name']})"
         mn = " Tweeted :"
         text += mn + "\n\n" + f"`{tweet['text']}`"
