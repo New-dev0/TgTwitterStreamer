@@ -49,12 +49,18 @@ class TgStreamer(AsyncStream):
         mn = " Tweeted :"
         text += mn + "\n\n" + f"`{tweet['text']}`"
         url = f"https://twitter.com/{user['screen_name']}/status/{tweet['id']}"
-        await Client.send_message(
-            Var.TO_CHAT,
-            text,
-            link_preview=False,
-            buttons=Button.url(text="View 🔗", url=url),
-        )
+        multichat = Var.TO_CHAT.split()
+        for chat in multichat:
+            try:
+                chat = int(chat)
+            except BaseException:
+                pass
+            await Client.send_message(
+                chat,
+                text,
+                link_preview=False,
+                buttons=Button.url(text="View 🔗", url=url),
+            )
 
     async def on_connection_error(self):
         print("<<---|| Connection Error ||--->>")
