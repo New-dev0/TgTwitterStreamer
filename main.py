@@ -3,14 +3,15 @@
 # GNU General Public License v3.0
 
 
+import logging
+
 import tweepy
-from Configs import Var
 from telethon import TelegramClient, events
 from telethon.tl.custom import Button
-
 from tweepy.asynchronous import AsyncStream
 
-import logging
+from Configs import Var
+
 logging.basicConfig(level=logging.INFO)
 
 
@@ -40,7 +41,7 @@ class TgStreamer(AsyncStream):
     def get_urls(self, media):
         if not media:
             return []
-        return [m['media_url_https'] for m in media if m['type'] == 'photo']
+        return [m["media_url_https"] for m in media if m["type"] == "photo"]
 
     async def on_status(self, status):
         tweet = status._json
@@ -51,9 +52,11 @@ class TgStreamer(AsyncStream):
             return
         pic = []
         try:
-            entities = tweet.get('entities', {}).get('media')
-            extended_entities = tweet.get('extended_entities', {}).get('media')
-            extended_tweet = tweet.get('extended_tweet', {}).get('entities', {}).get('media')
+            entities = tweet.get("entities", {}).get("media")
+            extended_entities = tweet.get("extended_entities", {}).get("media")
+            extended_tweet = (
+                tweet.get("extended_tweet", {}).get("entities", {}).get("media")
+            )
             all_urls = set()
             for media in (entities, extended_entities, extended_tweet):
                 urls = self.get_urls(media)
@@ -85,6 +88,7 @@ class TgStreamer(AsyncStream):
                     text,
                     buttons=Button.url(text="View 🔗", url=url),
                 )
+
     async def on_connection_error(self):
         print("<<---|| Connection Error ||--->>")
 
@@ -103,17 +107,15 @@ async def startmsg(event):
                     "Source",
                     url="https://github.com/New-dev0/TgTwitterStreamer",
                 ),
-            Button.url("Support Group", url="t.me/FutureCodesChat")],
+                Button.url("Support Group", url="t.me/FutureCodesChat"),
+            ],
         ],
     )
 
 
 if __name__ == "__main__":
     Stream = TgStreamer(
-        Var.CONSUMER_KEY,
-        Var.CONSUMER_SECRET,
-        Var.ACCESS_TOKEN,
-        Var.ACCESS_TOKEN_SECRET
+        Var.CONSUMER_KEY, Var.CONSUMER_SECRET, Var.ACCESS_TOKEN, Var.ACCESS_TOKEN_SECRET
     )
     Stream.filter(follow=TRACK_IDS)
 
