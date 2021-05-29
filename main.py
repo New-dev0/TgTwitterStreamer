@@ -76,15 +76,14 @@ class TgStreamer(AsyncStream):
                 await Client.send_message(
                     file=pic,
                     text,
-                    buttons=[Button.url(text="View 🔗", url=url)],
-                )
+                    buttons=[Button.url(text="View 🔗", url=url)])
             else:
                 await Client.send_message(
                     chat,
                     text,
                     link_preview=False,
-                    buttons=[Button.url(text="View 🔗", url=url)],
-                )
+                    buttons=[Button.url(text="View 🔗", url=url)])
+
     async def on_connection_error(self):
         print("<<---|| Connection Error ||--->>")
 
