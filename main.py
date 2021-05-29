@@ -59,7 +59,7 @@ class TgStreamer(AsyncStream):
             urls = self.get_urls(media)
             all_urls.update(set(urls))
         for url in all_urls:
-            print url
+            print (url)
         text = f"[{user['name']}](https://twitter.com/{user['screen_name']})"
         mn = " Tweeted :"
         text += mn + "\n\n" + f"`{tweet['text']}`"
