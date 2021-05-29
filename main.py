@@ -49,6 +49,7 @@ class TgStreamer(AsyncStream):
         user = tweet["user"]
         if not str(user["id"]) in TRACK_IDS:
             return
+        pic = []
         try:
             entities = tweet.get('entities', {}).get('media')
             extended_entities = tweet.get('extended_entities', {}).get('media')
@@ -56,9 +57,9 @@ class TgStreamer(AsyncStream):
             all_urls = set()
             for media in (entities, extended_entities, extended_tweet):
                 urls = self.get_urls(media)
-                print(urls)
                 all_urls.update(set(urls))
-            print(all_urls)
+            for pik in all_urls:
+                pic.append(pik)
         except BaseException:
             pass
         text = f"[{user['name']}](https://twitter.com/{user['screen_name']})"
@@ -71,13 +72,19 @@ class TgStreamer(AsyncStream):
                 chat = int(chat)
             except BaseException:
                 pass
-            await Client.send_message(
-                chat,
-                text,
-                link_preview=False,
-                buttons=Button.url(text="View 🔗", url=url),
-            )
-
+            if pic:
+                await Client.send_message(
+                    file=pic,
+                    text,
+                    buttons=[Button.url(text="View 🔗", url=url)],
+                )
+            else:
+                await Client.send_message(
+                    chat,
+                    text,
+                    link_preview=False,
+                    buttons=[Button.url(text="View 🔗", url=url)],
+                )
     async def on_connection_error(self):
         print("<<---|| Connection Error ||--->>")
 
