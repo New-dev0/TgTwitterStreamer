@@ -3,7 +3,8 @@
 # GNU General Public License v3.0
 
 
-import logging, re
+import logging
+import re
 
 import tweepy
 from telethon import TelegramClient, events
@@ -111,6 +112,7 @@ async def startmsg(event):
             ],
         ],
     )
+
 
 @Client.on(events.callbackquery.CallbackQuery(data=re.compile("ok")))
 async def _(e):
