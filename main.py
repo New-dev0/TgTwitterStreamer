@@ -76,19 +76,22 @@ class TgStreamer(AsyncStream):
                 chat = int(chat)
             except BaseException:
                 pass
-            if pic:
-                await Client.send_message(
-                    chat,
-                    text,
-                    file=pic,
-                    buttons=Button.url(text="View 🔗", url=url),
-                )
-            else:
-                await Client.send_message(
-                    chat,
-                    text,
-                    buttons=Button.url(text="View 🔗", url=url),
-                )
+            try:
+                if pic:
+                    await Client.send_message(
+                        chat,
+                        text,
+                        file=pic,
+                        buttons=Button.url(text="View 🔗", url=url),
+                    )
+                else:
+                    await Client.send_message(
+                        chat,
+                        text,
+                        buttons=Button.url(text="View 🔗", url=url),
+                    )
+            except Exception as er:
+                print(er)
 
     async def on_connection_error(self):
         print("<<---|| Connection Error ||--->>")
