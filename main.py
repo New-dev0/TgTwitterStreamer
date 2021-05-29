@@ -112,9 +112,11 @@ async def startmsg(event):
         ],
     )
 
+
 @Client.on(events.callbackquery.CallbackQuery("ok"))
 async def _(e):
     return await e.answer("I'm Alive , No Need to click button 😂😂")
+
 
 if __name__ == "__main__":
     Stream = TgStreamer(
