@@ -49,7 +49,7 @@ class TgStreamer(AsyncStream):
         text += mn + "\n\n" + f"`{tweet['text']}`"
         url = f"https://twitter.com/{user['screen_name']}/status/{tweet['id']}"
         await Client.send_message(
-            Var.TO_CHAT,
+            int(Var.TO_CHAT),
             text,
             link_preview=False,
             buttons=Button.url(text="View 🔗", url=url),
