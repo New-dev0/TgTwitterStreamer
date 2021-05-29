@@ -101,7 +101,7 @@ async def startmsg(event):
     await event.reply(
         file="ult.webp",
         buttons=[
-            [Button.inline("Hello Sir i'm Alive")],
+            [Button.inline("Hello Sir i'm Alive", data="ok")],
             [
                 Button.url(
                     "Source",
@@ -112,6 +112,9 @@ async def startmsg(event):
         ],
     )
 
+@Client.on(events.callbackquery.CallbackQuery("ok"))
+async def _(e):
+    return await e.answer("I'm Alive , No Need to click button 😂😂")
 
 if __name__ == "__main__":
     Stream = TgStreamer(
