@@ -39,12 +39,12 @@ class TgStreamer(AsyncStream):
 
     async def on_status(self, status):
         tweet = status._json
-        print(tweet)
+        if tweet["text"].startswith("RT "):
+            return
         user = tweet["user"]
         if not str(user["id"]) in TRACK_IDS:
             return
-        if tweet["text"].startswith("RT "):
-            return
+        print(tweet)
         text = f"[{user['name']}](https://twitter.com/{user['screen_name']})"
         mn = " Tweeted :"
         text += mn + "\n\n" + f"`{tweet['text']}`"
