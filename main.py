@@ -37,6 +37,12 @@ class TgStreamer(AsyncStream):
     async def on_connect(self):
         print("<<<---||| Stream Connected |||--->>>")
 
+    def get_urls(self, media):
+        if not media:
+            return []
+
+        return [m['media_url_https'] for m in media if m['type'] == 'photo']
+
     async def on_status(self, status):
         tweet = status._json
         if tweet["text"].startswith("RT "):
@@ -44,9 +50,15 @@ class TgStreamer(AsyncStream):
         user = tweet["user"]
         if not str(user["id"]) in TRACK_IDS:
             return
-        if 'media' in tweet.entities:
-            for image in tweet.entities['media']:
-               print(image)
+        entities = container.get('entities', {}).get('media')
+        extended_entities = container.get('extended_entities', {}).get('media')
+        extended_tweet = container.get('extended_tweet', {}).get('entities', {}).get('media')
+        all_urls = set()
+        for media in (entities, extended_entities, extended_tweet):
+            urls = self.get_urls(media)
+            all_urls.update(set(urls))
+        for url in all_urls:
+            print url
         text = f"[{user['name']}](https://twitter.com/{user['screen_name']})"
         mn = " Tweeted :"
         text += mn + "\n\n" + f"`{tweet['text']}`"
