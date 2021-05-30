@@ -51,7 +51,7 @@ class TgStreamer(AsyncStream):
         user = tweet["user"]
         if not str(user["id"]) in TRACK_IDS:
             return
-        pic = []
+        pic, content = [], ""
         try:
             entities = tweet.get("entities", {}).get("media")
             extended_entities = tweet.get("extended_entities", {}).get("media")
@@ -64,11 +64,15 @@ class TgStreamer(AsyncStream):
                 all_urls.update(set(urls))
             for pik in all_urls:
                 pic.append(pik)
+            content = tweet.get("extended_tweet").get("full_text")
         except BaseException:
             pass
         text = f"[{user['name']}](https://twitter.com/{user['screen_name']})"
         mn = " Tweeted :"
-        text += mn + "\n\n" + f"`{tweet['text']}`"
+        if content and (len(content) < 1000):
+            text += mn + "\n\n" + f"`{content}`"
+        else:
+            text += mn + "\n\n" + f"`{tweet['text']}`"
         url = f"https://twitter.com/{user['screen_name']}/status/{tweet['id']}"
         multichat = Var.TO_CHAT.split()
         for chat in multichat:
