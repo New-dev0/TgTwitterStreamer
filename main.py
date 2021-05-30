@@ -83,6 +83,7 @@ class TgStreamer(AsyncStream):
                             await Client.send_message(
                                 chat,
                                 text,
+                                link_preview=False,
                                 file=pic,
                                 buttons=Button.url(text="View 🔗", url=url),
                             )
@@ -94,12 +95,14 @@ class TgStreamer(AsyncStream):
                         await Client.send_message(
                                 chat,
                                 text,
+                                link_preview=False,
                                 buttons=Button.url(text="View 🔗", url=url),
                         )
                 else:
                     await Client.send_message(
                         chat,
                         text,
+                        link_preview=False,
                         buttons=Button.url(text="View 🔗", url=url),
                     )
             except Exception as er:
