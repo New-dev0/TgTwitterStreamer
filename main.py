@@ -3,14 +3,16 @@
 # GNU General Public License v3.0
 
 
+import logging
+import re
+
 import tweepy
-from Configs import Var
 from telethon import TelegramClient, events
 from telethon.tl.custom import Button
-
 from tweepy.asynchronous import AsyncStream
 
-import logging
+from Configs import Var
+
 logging.basicConfig(level=logging.INFO)
 
 
@@ -37,23 +39,78 @@ class TgStreamer(AsyncStream):
     async def on_connect(self):
         print("<<<---||| Stream Connected |||--->>>")
 
+    def get_urls(self, media):
+        if not media:
+            return []
+        return [m["media_url_https"] for m in media if m["type"] == "photo"]
+
     async def on_status(self, status):
         tweet = status._json
+        if tweet["text"].startswith("RT "):
+            return
         user = tweet["user"]
         if not str(user["id"]) in TRACK_IDS:
             return
-        if tweet["text"].startswith("RT "):
-            return
+        pic, content = [], ""
+        try:
+            entities = tweet.get("entities", {}).get("media")
+            extended_entities = tweet.get("extended_entities", {}).get("media")
+            extended_tweet = (
+                tweet.get("extended_tweet", {}).get("entities", {}).get("media")
+            )
+            all_urls = set()
+            for media in (entities, extended_entities, extended_tweet):
+                urls = self.get_urls(media)
+                all_urls.update(set(urls))
+            for pik in all_urls:
+                pic.append(pik)
+            content = tweet.get("extended_tweet").get("full_text")
+        except BaseException:
+            pass
         text = f"[{user['name']}](https://twitter.com/{user['screen_name']})"
         mn = " Tweeted :"
-        text += mn + "\n\n" + f"`{tweet['text']}`"
+        if content and (len(content) < 1000):
+            text += mn + "\n\n" + f"`{content}`"
+        else:
+            text += mn + "\n\n" + f"`{tweet['text']}`"
         url = f"https://twitter.com/{user['screen_name']}/status/{tweet['id']}"
-        await Client.send_message(
-            int(Var.TO_CHAT),
-            text,
-            link_preview=False,
-            buttons=Button.url(text="View 🔗", url=url),
-        )
+        multichat = Var.TO_CHAT.split()
+        for chat in multichat:
+            try:
+                chat = int(chat)
+            except BaseException:
+                pass
+            try:
+                if pic:
+                    if len(pic) == 1:
+                        for pic in pic:
+                            await Client.send_message(
+                                chat,
+                                text,
+                                link_preview=False,
+                                file=pic,
+                                buttons=Button.url(text="View 🔗", url=url),
+                            )
+                    else:
+                        await Client.send_file(
+                                chat,
+                                file=pic,
+                        )
+                        await Client.send_message(
+                                chat,
+                                text,
+                                link_preview=False,
+                                buttons=Button.url(text="View 🔗", url=url),
+                        )
+                else:
+                    await Client.send_message(
+                        chat,
+                        text,
+                        link_preview=False,
+                        buttons=Button.url(text="View 🔗", url=url),
+                    )
+            except Exception as er:
+                print(er)
 
     async def on_connection_error(self):
         print("<<---|| Connection Error ||--->>")
@@ -65,25 +122,28 @@ class TgStreamer(AsyncStream):
 @Client.on(events.NewMessage(pattern=r"/start"))
 async def startmsg(event):
     await event.reply(
-        "Hi, I am Alive !",
+        file="ult.webp",
         buttons=[
+            [Button.inline("Hello Sir i'm Alive", data="ok")],
             [
                 Button.url(
-                    "TgTwitterStreamer",
+                    "Source",
                     url="https://github.com/New-dev0/TgTwitterStreamer",
-                )
+                ),
+                Button.url("Support Group", url="t.me/FutureCodesChat"),
             ],
-            [Button.url("Support Group", url="t.me/FutureCodesChat")],
         ],
     )
 
 
+@Client.on(events.callbackquery.CallbackQuery(data=re.compile("ok")))
+async def _(e):
+    return await e.answer("I'm Alive , No Need to click button 😂😂")
+
+
 if __name__ == "__main__":
     Stream = TgStreamer(
-        Var.CONSUMER_KEY,
-        Var.CONSUMER_SECRET,
-        Var.ACCESS_TOKEN,
-        Var.ACCESS_TOKEN_SECRET
+        Var.CONSUMER_KEY, Var.CONSUMER_SECRET, Var.ACCESS_TOKEN, Var.ACCESS_TOKEN_SECRET
     )
     Stream.filter(follow=TRACK_IDS)
 
