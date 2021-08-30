@@ -85,18 +85,20 @@ class TgStreamer(AsyncStream):
                 pic.append(pik)
             if _entities and _entities["hashtags"]:
                 hashtags = "".join(f"#{a} " for a in _entities["hashtags"])
+            content = tweet.get("extended_tweet").get("full_text")
         except AttributeError:
             pass
+
         sun = user['screen_name']
-        content = tweet.get("extended_tweet").get("full_text")
         sender_url = f"https://twitter.com/{sun})"
+        TWEET_LINK = f"https://twitter.com/{sun}/status/{tweet['id']}"
+
         if content and (len(content) < 1000):
             text = content
         else:
             text = tweet['text']
         spli = text.split()
-        
-        TWEET_LINK = f"https://twitter.com/{sun}/status/{tweet['id']}"
+
         text = Var.CUSTOM_TEXT.format(SENDER=user["name"],
                                       SENDER_USERNAME="@" + sun,
                                       TWEET_TEXT=text,
