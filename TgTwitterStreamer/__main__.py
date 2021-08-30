@@ -50,20 +50,28 @@ class TgStreamer(AsyncStream):
     async def on_status(self, status):
         tweet = status._json
         print(tweet)
-        if tweet["text"].startswith("RT "):
-            return
+
         user = tweet["user"]
         # Ignore Mentions to Filtered User...
         if not str(user["id"]) in TRACK_IDS:
             return
 
+        if not Var.TAKE_REPLIES and tweet["in_reply_to_status_id"]:
+            return
+
+        if not Var.TAKE_RETWEETS and tweet["retweeted"]:
+            return
+  
+        # Cache BOT Username
         try:
             bot_username = CACHE_USERNAME[0]
         except IndexError:
-            bot_username = (await Client.get_me()).bot_username
+            bot_username = (await Client.get_me()).username
             CACHE_USERNAME.append(bot_username)
-        pic, content = [], ""
-        entities = tweet.get("entities", {}).get("media")
+
+        pic, content, hashtags = [], "", ""
+        _entities = tweet.get("entities", {})
+        entitites = _entities.get("media")
         extended_entities = tweet.get("extended_entities", {}).get("media")
         extended_tweet = (
                 tweet.get("extended_tweet", {}).get("entities", {}).get("media")
@@ -74,6 +82,8 @@ class TgStreamer(AsyncStream):
             all_urls.update(set(urls))
         for pik in all_urls:
             pic.append(pik)
+        if _entities and _entities["hashtags"]:
+            hashtags = "".join(f"#{a} " for a in _entities["hashtags"])
         sun = user['screen_name']
         content = tweet.get("extended_tweet").get("full_text")
         sender_url = f"https://twitter.com/{sun})"
@@ -90,6 +100,7 @@ class TgStreamer(AsyncStream):
                                       TWEET_LINK=TWEET_LINK,
                                       SENDER_PROFILE=sender_url,
                                       _REPO_LINK=REPO_LINK,
+                                      HASHTAGS=hashtags,
                                       BOT_USERNAME=bot_username
                                       )
         multichat = Var.TO_CHAT.split()
@@ -147,7 +158,7 @@ async def startmsg(event):
             [
                 Button.url(
                     "Source",
-                    url="https://github.com/New-dev0/TgTwitterStreamer",
+                    url=REPO_LINK,
                 ),
                 Button.url("Support Group", url="t.me/FutureCodesChat"),
             ],
