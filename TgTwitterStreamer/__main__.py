@@ -90,7 +90,7 @@ class TgStreamer(AsyncStream):
             pass
 
         sun = user['screen_name']
-        sender_url = f"https://twitter.com/{sun})"
+        sender_url = f"https://twitter.com/{sun}"
         TWEET_LINK = f"https://twitter.com/{sun}/status/{tweet['id']}"
 
         if content and (len(content) < 1000):
