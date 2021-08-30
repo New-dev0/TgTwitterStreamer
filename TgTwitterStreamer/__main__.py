@@ -71,7 +71,7 @@ class TgStreamer(AsyncStream):
 
         pic, content, hashtags = [], "", ""
         _entities = tweet.get("entities", {})
-        entitites = _entities.get("media")
+        entities = _entities.get("media")
         extended_entities = tweet.get("extended_entities", {}).get("media")
         extended_tweet = (
                 tweet.get("extended_tweet", {}).get("entities", {}).get("media")
