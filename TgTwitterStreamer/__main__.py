@@ -11,7 +11,7 @@ from telethon import TelegramClient, events
 from telethon.tl.custom import Button
 from tweepy.asynchronous import AsyncStream
 
-from . import Var, _REPO_LINK
+from . import Var, REPO_LINK
 
 logging.basicConfig(level=logging.INFO)
 
@@ -89,7 +89,7 @@ class TgStreamer(AsyncStream):
                                       TWEET_TEXT=text,
                                       TWEET_LINK=TWEET_LINK,
                                       SENDER_PROFILE=sender_url,
-                                      _REPO_LINK=_REPO_LINK,
+                                      _REPO_LINK=REPO_LINK,
                                       BOT_USERNAME=bot_username
                                       )
         multichat = Var.TO_CHAT.split()
