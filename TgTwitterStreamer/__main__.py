@@ -50,7 +50,6 @@ class TgStreamer(AsyncStream):
 
     async def on_status(self, status):
         tweet = status._json
-        print(tweet)
 
         user = tweet["user"]
         # Ignore Mentions to Filtered User...
