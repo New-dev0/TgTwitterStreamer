@@ -5,7 +5,7 @@
 
 import logging
 import re
-
+import aiohttp
 import tweepy
 from telethon import TelegramClient, events
 from telethon.tl.custom import Button
@@ -84,7 +84,7 @@ class TgStreamer(AsyncStream):
             for pik in all_urls:
                 pic.append(pik)
             if _entities and _entities["hashtags"]:
-                hashtags = "".join(f"#{a} " for a in _entities["hashtags"])
+                hashtags = "".join(f"#{a['text']} " for a in _entities["hashtags"])
             content = tweet.get("extended_tweet").get("full_text")
         except AttributeError:
             pass
@@ -97,7 +97,13 @@ class TgStreamer(AsyncStream):
             text = content
         else:
             text = tweet['text']
+ 
         spli = text.split()
+        async with aiohttp.ClientSession() as ses:
+            for on in spli:
+                if "t.co/" in on:
+                    async with ses.get(on) as out:
+                        text = text.replace(on, out.url)
 
         text = Var.CUSTOM_TEXT.format(SENDER=user["name"],
                                       SENDER_USERNAME="@" + sun,
