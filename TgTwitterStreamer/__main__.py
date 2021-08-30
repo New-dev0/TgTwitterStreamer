@@ -70,20 +70,23 @@ class TgStreamer(AsyncStream):
             CACHE_USERNAME.append(bot_username)
 
         pic, content, hashtags = [], "", ""
-        _entities = tweet.get("entities", {})
-        entities = _entities.get("media")
-        extended_entities = tweet.get("extended_entities", {}).get("media")
-        extended_tweet = (
+        try:
+            _entities = tweet.get("entities", {})
+            entities = _entities.get("media")
+            extended_entities = tweet.get("extended_entities", {}).get("media")
+            extended_tweet = (
                 tweet.get("extended_tweet", {}).get("entities", {}).get("media")
             )
-        all_urls = set()
-        for media in (entities, extended_entities, extended_tweet):
-            urls = self.get_urls(media)
-            all_urls.update(set(urls))
-        for pik in all_urls:
-            pic.append(pik)
-        if _entities and _entities["hashtags"]:
-            hashtags = "".join(f"#{a} " for a in _entities["hashtags"])
+            all_urls = set()
+            for media in (entities, extended_entities, extended_tweet):
+                urls = self.get_urls(media)
+                all_urls.update(set(urls))
+            for pik in all_urls:
+                pic.append(pik)
+            if _entities and _entities["hashtags"]:
+                hashtags = "".join(f"#{a} " for a in _entities["hashtags"])
+        except AttributeError:
+            pass
         sun = user['screen_name']
         content = tweet.get("extended_tweet").get("full_text")
         sender_url = f"https://twitter.com/{sun})"
