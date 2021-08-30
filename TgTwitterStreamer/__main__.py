@@ -5,13 +5,14 @@
 
 import logging
 import re
+
 import aiohttp
 import tweepy
 from telethon import TelegramClient, events
 from telethon.tl.custom import Button
 from tweepy.asynchronous import AsyncStream
 
-from . import Var, REPO_LINK
+from . import REPO_LINK, Var
 
 logging.basicConfig(level=logging.INFO)
 
@@ -61,7 +62,7 @@ class TgStreamer(AsyncStream):
 
         if not Var.TAKE_RETWEETS and tweet["retweeted"]:
             return
-  
+
         # Cache BOT Username
         try:
             bot_username = CACHE_USERNAME[0]
@@ -89,31 +90,32 @@ class TgStreamer(AsyncStream):
         except AttributeError:
             pass
 
-        sun = user['screen_name']
+        sun = user["screen_name"]
         sender_url = f"https://twitter.com/{sun}"
         TWEET_LINK = f"https://twitter.com/{sun}/status/{tweet['id']}"
 
         if content and (len(content) < 1000):
             text = content
         else:
-            text = tweet['text']
- 
+            text = tweet["text"]
+
         spli = text.split()
         async with aiohttp.ClientSession() as ses:
             for on in spli:
                 if "t.co/" in on:
                     async with ses.get(on) as out:
-                        text = text.replace(on, out.url)
+                        text = text.replace(on, str(out.url))
 
-        text = Var.CUSTOM_TEXT.format(SENDER=user["name"],
-                                      SENDER_USERNAME="@" + sun,
-                                      TWEET_TEXT=text,
-                                      TWEET_LINK=TWEET_LINK,
-                                      SENDER_PROFILE=sender_url,
-                                      _REPO_LINK=REPO_LINK,
-                                      HASHTAGS=hashtags,
-                                      BOT_USERNAME=bot_username
-                                      )
+        text = Var.CUSTOM_TEXT.format(
+            SENDER=user["name"],
+            SENDER_USERNAME="@" + sun,
+            TWEET_TEXT=text,
+            TWEET_LINK=TWEET_LINK,
+            SENDER_PROFILE=sender_url,
+            _REPO_LINK=REPO_LINK,
+            HASHTAGS=hashtags,
+            BOT_USERNAME=bot_username,
+        )
         multichat = Var.TO_CHAT.split()
         for chat in multichat:
             try:
@@ -129,18 +131,20 @@ class TgStreamer(AsyncStream):
                                 text,
                                 link_preview=False,
                                 file=pic,
-                                buttons=Button.url(text=Var.BUTTON_TITLE, url=TWEET_LINK),
+                                buttons=Button.url(
+                                    text=Var.BUTTON_TITLE, url=TWEET_LINK
+                                ),
                             )
                     else:
                         await Client.send_file(
-                                chat,
-                                file=pic,
+                            chat,
+                            file=pic,
                         )
                         await Client.send_message(
-                                chat,
-                                text,
-                                link_preview=False,
-                                buttons=Button.url(text=Var.BUTTON_TITLE, url=TWEET_LINK),
+                            chat,
+                            text,
+                            link_preview=False,
+                            buttons=Button.url(text=Var.BUTTON_TITLE, url=TWEET_LINK),
                         )
                 else:
                     await Client.send_message(
