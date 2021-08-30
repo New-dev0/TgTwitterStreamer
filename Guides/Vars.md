@@ -34,4 +34,5 @@ These Two Vars can be Taken from my.telegram.org
 ## - Optional Var
 - ` - TAKE_REPLIES - to Take Tweets Which are reply to User..`
 - ` - TAKE_RETWEETS - To Take Tweets, which are Retweets, done by User..`
-- `- CUSTOM_TEXT - Custom Tweet Format` - [Click Here to Detailed Info](./formatting.md)
+- ` - CUSTOM_TEXT - Custom Tweet Format` - [Click Here to Detailed Info](./formatting.md)
+- ` - BUTTON_TITLE - text to show on Button`
