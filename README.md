@@ -11,11 +11,7 @@
 ## Deploy to Heroku
 - [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-## Other Required Vars
-- `TRACK_USERS` - usernames for Person on Twitter, you want to Track/get Tweets of. Seperated by space 
-      if more. ex - "newdev0 drdo"
-- `TO_CHAT` - Id(s) of Chat, where you want to recieve Tweets.
-
+## For Detailed Vars Info - [Click Here](./Guides/Vars.md)
 ## Thanks to
 - [Dan](https://github.com/delivrance) for [Pyrogram](https://github.com/pyrogram/pyrogram)
 - [Tweepy](https://github.com/tweepy) Team for Creating [Tweepy](https://github.com/tweepy/tweepy)
