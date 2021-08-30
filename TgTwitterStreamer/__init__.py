@@ -8,7 +8,7 @@ from Configs import Var
 REPO_LINK = "https://github.com/New-dev0/TgTwitterStreamer"
 
 
-CUSTOM_FORMAT = """:🎊 **[{SENDER}]({SENDER_PROFILE}) :**
+CUSTOM_FORMAT = """🎊 **[{SENDER}]({SENDER_PROFILE}) :**
 
 🍿 {TWEET_TEXT}
 
