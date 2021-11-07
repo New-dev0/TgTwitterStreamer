@@ -1,0 +1,6 @@
+.env
+__pycache__\
+ignore*
+*.mp4
+*.jpg
+*.session

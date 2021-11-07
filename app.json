@@ -11,11 +11,11 @@
         },
         "API_ID": {
             "description": "Get it from https://my.telegram.org/apps ",
-            "value": ""
+            "value": "6"
         },
         "API_HASH": {
             "description": "Get it from https://my.telegram.org/apps",
-            "value": ""
+            "value": "eb06d4abfb49dc3eeb1aeb98ae0f581e"
         },
         "CONSUMER_KEY": {
             "description": "Read New-dev0.github.io/tgtwitterbot to Know About it.",

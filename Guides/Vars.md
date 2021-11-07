@@ -32,7 +32,16 @@ These Two Vars can be Taken from my.telegram.org
 
 
 ## - Optional Var
-- ` - TAKE_REPLIES - to Take Tweets Which are reply to User..`
-- ` - TAKE_RETWEETS - To Take Tweets, which are Retweets, done by User..`
+- ` - TRACK_WORDS - Track word overall on Twitter, overlapping 'TRACK_USERS' Var. (eg - 'hello | bye | another word')`
+
+- ` - TAKE_REPLIES - to Take Tweets Which are reply to User. Fill (True/False).`
+- ` - TAKE_RETWEETS - To Take Tweets, which are Retweets, done by User. Fill (True/False)`
+- ` - TAKE_OTHERS_REPLY - To Take reply on posts of user filled in 'TRACK_USERS'. Fill (True/False)`
 - ` - CUSTOM_TEXT - Custom Tweet Format` - [Click Here to Detailed Info](./formatting.md)
 - ` - BUTTON_TITLE - text to show on Button`
+- ` - DISABLE_BUTTON - Disable the button attached to the posts. Fill True/False`
+- ` - FILTER_LEVEL - Level on which number of tweets to get and set depends. Fill 'low' or 'medium'.`
+- ` - LANGUAGES - list of languages, in which tweet should be return. (eg - 'en ru')`
+- ` - DISABLE_START - Disable '/start' message.`
+- ` - MUST_INCLUDE - word which should be included in Tweet Text.`
+- ` - MUST_EXCLUDE - word which should be excluded in Tweet Text.`

@@ -1,6 +1,5 @@
-telethon
-cryptg
-aiohttp
-oauthlib
-git+https://github.com/New-dev0/Tweepy.git
-python-decouple
+telethon==1.23.0
+cryptg==0.2.post4
+aiohttp==3.8.0
+tweepy==4.3.0
+python-decouple==3.3
