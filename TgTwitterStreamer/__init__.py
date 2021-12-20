@@ -5,7 +5,11 @@
 import logging
 from Configs import Var
 from telethon import TelegramClient
+from telethon.tl.custom import Button
 from tweepy import API, OAuthHandler
+from tweepy.errors import Unauthorized
+
+REPO_LINK = "https://github.com/New-dev0/TgTwitterStreamer"
 
 LOGGER = logging.getLogger("TgTwitterStreamer")
 LOGGER.setLevel(level=logging.INFO)
@@ -23,11 +27,17 @@ Twitter = API(auth)
 
 # Telegram's Client
 # Used for sending messages to Chat.
+
 Client = TelegramClient(
-    "TgTwitterStreamer", api_id=Var.API_ID, api_hash=Var.API_HASH
+    "TgTwitterStreamer",
+    api_id=Var.API_ID,
+    api_hash=Var.API_HASH,
 ).start(bot_token=Var.BOT_TOKEN)
 
-REPO_LINK = "https://github.com/New-dev0/TgTwitterStreamer"
+
+CUSTOM_BUTTONS = None
+TRACK_IDS = None
+TRACK_WORDS = None
 
 
 CUSTOM_FORMAT = """
@@ -60,8 +70,46 @@ if Var.TO_CHAT:
 else:
     LOGGER.info("Please Add 'TO_CHAT' Var to Use TgTwitterStreamer!")
     LOGGER.info(
-        "'TO_CHAT' : Fill Telegram Username/Chat ids,"
-        + "so that you can get tweets."
+        "'TO_CHAT' : Fill Telegram Username/Chat ids," +
+        "so that you can get tweets."
     )
     LOGGER.info("Quitting Now..")
     exit()
+
+
+if Var.CUSTOM_BUTTON:
+    button = []
+    try:
+        for line in Var.CUSTOM_BUTTON.split("||"):
+            new = []
+            for but in line.split("|"):
+                spli_ = but.split("-", maxsplit=1)
+                new.append(Button.url(spli_[0].strip(), spli_[1].strip()))
+            button.append(new)
+        CUSTOM_BUTTONS = button
+    except Exception as er:
+        LOGGER.exception(er)
+
+
+LOGGER.info("<<--- Setting Up Bot ! --->>")
+
+
+if Var.TRACK_USERS:
+    TRACK_IDS = []
+    for username in Var.TRACK_USERS.split(" "):
+        try:
+            user = Twitter.get_user(screen_name=username)._json
+            TRACK_IDS.append(user["id_str"])
+            LOGGER.info(
+                f"<<--- Added {user['screen_name']}" +
+                " to TRACK - LIST ! --->>"
+            )
+        except Unauthorized as er:
+            LOGGER.exception(er)
+            exit()
+        except Exception as e:
+            LOGGER.exception(e)
+
+
+if Var.TRACK_WORDS:
+    TRACK_WORDS = Var.TRACK_WORDS.split(" | ")

@@ -40,8 +40,25 @@ These Two Vars can be Taken from my.telegram.org
 - ` - CUSTOM_TEXT - Custom Tweet Format` - [Click Here to Detailed Info](./formatting.md)
 - ` - BUTTON_TITLE - text to show on Button`
 - ` - DISABLE_BUTTON - Disable the button attached to the posts. Fill True/False`
+- ` - CUSTOM_BUTTON - Custom Url button to attach to Post.`
 - ` - FILTER_LEVEL - Level on which number of tweets to get and set depends. Fill 'low' or 'medium'.`
 - ` - LANGUAGES - list of languages, in which tweet should be return. (eg - 'en ru')`
 - ` - DISABLE_START - Disable '/start' message.`
 - ` - MUST_INCLUDE - word which should be included in Tweet Text.`
 - ` - MUST_EXCLUDE - word which should be excluded in Tweet Text.`
+
+
+### CUSTOM_BUTTON
+- Button text and url are seperated by "-"
+- Two or more Buttons are seperated by "|"
+- Use "||" to seperate Button rows.
+
+-   #### Example
+-
+    - `Button-https://google.com || Button2-https://telegram.org
+    `
+    - It will create a 2 buttons one below another.
+- 
+    - `Button-https://google.com | Button2-https://telegram.org || Button-https://google.com | Button2-https://telegram.org`
+
+    - It will create 2 rows, and 2 same button in each.

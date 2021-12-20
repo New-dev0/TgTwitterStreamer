@@ -21,6 +21,7 @@ class Var:
     # Username of Twitter User, whose Tweets should be tracked
     # and posted to chat filled in TO_CHAT.
     TRACK_USERS = config("TRACK_USERS", None)
+
     # TRACK_WORDS: To filter Tweets by word
     # Should be seperated by "|"
     TRACK_WORDS = config("TRACK_WORDS", None)
@@ -30,6 +31,7 @@ class Var:
     # Text to Display on Button, Attached to Message Posted on Telegram.
     BUTTON_TITLE = config("BUTTON_TITLE", "View on Twitter🔗")
     # Set DISABLE_BUTTON to True, to disable that Button.
+    CUSTOM_BUTTON = config("CUSTOM_BUTTON", default=None)
     DISABLE_BUTTON = config("DISABLE_BUTTON", default=False, cast=bool)
 
     # Media Url, to be send with '/start' message.
