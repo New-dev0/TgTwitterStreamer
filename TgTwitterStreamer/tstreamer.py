@@ -49,7 +49,7 @@ class TgStreamer(AsyncStream):
                 List.append(link)
         return List
 
-    def _favorite(self, id_: str):
+    def _favorite(self, id: str):
         try:
             Twitter.create_favorite(id)
         except Exception as er:
