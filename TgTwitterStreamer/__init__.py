@@ -14,8 +14,7 @@ REPO_LINK = "https://github.com/New-dev0/TgTwitterStreamer"
 LOGGER = logging.getLogger("TgTwitterStreamer")
 LOGGER.setLevel(level=logging.INFO)
 logging.basicConfig(
-    format="[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s",
-    level=logging.INFO
+    format="[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s", level=logging.INFO
 )
 
 # Tweepy's Client
@@ -29,7 +28,7 @@ Twitter = API(auth)
 # Used for sending messages to Chat.
 
 Client = TelegramClient(
-    "TgTwitterStreamer",
+    None,
     api_id=Var.API_ID,
     api_hash=Var.API_HASH,
 ).start(bot_token=Var.BOT_TOKEN)
@@ -70,8 +69,7 @@ if Var.TO_CHAT:
 else:
     LOGGER.info("Please Add 'TO_CHAT' Var to Use TgTwitterStreamer!")
     LOGGER.info(
-        "'TO_CHAT' : Fill Telegram Username/Chat ids," +
-        "so that you can get tweets."
+        "'TO_CHAT' : Fill Telegram Username/Chat ids," + "so that you can get tweets."
     )
     LOGGER.info("Quitting Now..")
     exit()
@@ -101,8 +99,7 @@ if Var.TRACK_USERS:
             user = Twitter.get_user(screen_name=username)._json
             TRACK_IDS.append(user["id_str"])
             LOGGER.info(
-                f"<<--- Added {user['screen_name']}" +
-                " to TRACK - LIST ! --->>"
+                f"<<--- Added {user['screen_name']}" + " to TRACK - LIST ! --->>"
             )
         except Unauthorized as er:
             LOGGER.exception(er)

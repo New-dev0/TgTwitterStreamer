@@ -34,20 +34,13 @@ async def callback_query(event):
 # For people, deploying multiple apps on one bot. (including "me")
 
 if not Var.DISABLE_START:
-    Client.add_event_handler(
-        start_message,
-        NewMessage(pattern="^/start$")
-    )
-    Client.add_event_handler(
-        callback_query,
-        CallbackQuery(data=re.compile("ok"))
-    )
+    Client.add_event_handler(start_message, NewMessage(pattern="^/start$"))
+    Client.add_event_handler(callback_query, CallbackQuery(data=re.compile("ok")))
 
 
 if __name__ == "__main__":
     Stream = TgStreamer(
-        Var.CONSUMER_KEY, Var.CONSUMER_SECRET,
-        Var.ACCESS_TOKEN, Var.ACCESS_TOKEN_SECRET
+        Var.CONSUMER_KEY, Var.CONSUMER_SECRET, Var.ACCESS_TOKEN, Var.ACCESS_TOKEN_SECRET
     )
     Stream.filter(
         follow=TRACK_IDS,

@@ -4,25 +4,18 @@
 
 import os
 import asyncio
+from stat import FILE_ATTRIBUTE_NOT_CONTENT_INDEXED
 from aiohttp import ClientSession
 
 from html import unescape
-from telethon.tl.custom import Button
+from telethon.tl.custom import Button, Message
 from telethon.errors.rpcerrorlist import (
     FloodWaitError,
     WebpageCurlFailedError,
     MediaInvalidError,
 )
 from tweepy.asynchronous import AsyncStream
-from . import (
-    Twitter,
-    Client,
-    REPO_LINK,
-    Var,
-    LOGGER,
-    CUSTOM_BUTTONS,
-    TRACK_IDS
-)
+from . import Twitter, Client, REPO_LINK, Var, LOGGER, CUSTOM_BUTTONS, TRACK_IDS
 from .functions import download_from_url
 
 CACHE_USERNAME = []
@@ -63,10 +56,20 @@ class TgStreamer(AsyncStream):
             LOGGER.info("ERROR while Retweeting a Tweet.")
             LOGGER.exception(er)
 
+    async def _pin(self, msg: Message):
+        try:
+            await msg.pin()
+        except FloodWaitError as fw:
+            LOGGER.info("Flood wait error while auto pin!")
+            LOGGER.exception(fw)
+            await asyncio.sleep(fw.seconds + 10)
+        except Exception as er:
+            LOGGER.info(f"Error while pin: {er}")
+
     async def on_status(self, status):
         tweet = status._json
         user = tweet["user"]
-        LOGGER.info(tweet)
+        # LOGGER.info(tweet)
 
         if (
             not Var.TRACK_WORDS
@@ -156,7 +159,7 @@ class TgStreamer(AsyncStream):
         if pic == []:
             pic = None
 
-        button = None
+        button, MSG = None, None
 
         if CUSTOM_BUTTONS:
             button = CUSTOM_BUTTONS
@@ -180,8 +183,7 @@ class TgStreamer(AsyncStream):
                 msg_id = MSG[0].id if isinstance(MSG, list) else MSG.id
                 if not is_pic_alone and text and button:
                     await Client.send_message(
-                        chat, text, reply_to=msg_id,
-                        link_preview=False, buttons=button
+                        chat, text, reply_to=msg_id, link_preview=False, buttons=button
                     )
             except (WebpageCurlFailedError, MediaInvalidError) as er:
                 LOGGER.info(f"Handling <{er}>")
@@ -220,6 +222,10 @@ class TgStreamer(AsyncStream):
 
         if Var.AUTO_RETWEET:
             self._do_retweet(id=tweet["id"])
+
+        if Var.AUTO_PIN and MSG:
+            single_msg = MSG if not isinstance(MSG, list) else MSG[0]
+            await self._pin(single_msg)
 
     async def on_request_error(self, status_code):
         LOGGER.error(f"Stream Encountered HTTP Error: {status_code}")

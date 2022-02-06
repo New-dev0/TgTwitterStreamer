@@ -1,5 +1,7 @@
 .env
-__pycache__\
+.vscode/
+__pycache__/
+TgTwitterStreamer/__pycache__/
 ignore*
 *.mp4
 *.jpg

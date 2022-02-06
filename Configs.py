@@ -1,3 +1,7 @@
+# Telegram - Twitter - Bot
+# Github.com/New-dev0/TgTwitterStreamer
+# GNU General Public License v3.0
+
 from decouple import config
 
 
@@ -56,6 +60,7 @@ class Var:
     # Automations
     AUTO_LIKE = config("AUTO_LIKE", default=False, cast=bool)
     AUTO_RETWEET = config("AUTO_RETWEET", default=False, cast=bool)
+    AUTO_PIN = config("AUTO_PIN", default=False, cast=bool)
 
     _filter_level = None
     # There can be Wide Range of Tweets.
