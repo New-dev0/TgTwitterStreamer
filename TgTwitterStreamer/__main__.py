@@ -15,13 +15,12 @@ async def start_message(event):
         Var.START_MESSAGE,
         file=Var.START_MEDIA,
         buttons=[
-            [Button.inline("Hello Sir, i'm Alive", data="ok")],
             [
                 Button.url(
-                    "Source",
-                    url=REPO_LINK,
+                    "Channel",
+                    url="https://t.me/CryptoNite_News",
                 ),
-                Button.url("Support Group", url="t.me/FutureCodesChat"),
+                Button.url("Group", url="https://t.me/Cryptonite_club"),
             ],
         ],
     )
