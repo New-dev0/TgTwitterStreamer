@@ -18,9 +18,9 @@ async def start_message(event):
             [
                 Button.url(
                     "Channel",
-                    url="https://t.me/CryptoNite_News",
+                    url="https://t.me/test_cnc",
                 ),
-                Button.url("Group", url="https://t.me/Cryptonite_club"),
+                Button.url("Any Problem?", url="https://t.me/coder_debojit"),
             ],
         ],
     )
