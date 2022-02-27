@@ -42,7 +42,7 @@ TRACK_WORDS = None
 CUSTOM_FORMAT = """
 📌 <b><a href='{SENDER_PROFILE}'>{SENDER}</a></b> :
 
-🖥 {TWEET_TEXT}
+📃 {TWEET_TEXT}
 """
 
 
