@@ -4,7 +4,6 @@
 
 import os
 import asyncio
-from stat import FILE_ATTRIBUTE_NOT_CONTENT_INDEXED
 from aiohttp import ClientSession
 
 from html import unescape
@@ -15,10 +14,17 @@ from telethon.errors.rpcerrorlist import (
     MediaInvalidError,
 )
 from tweepy.asynchronous import AsyncStream
-from . import Twitter, Client, REPO_LINK, Var, LOGGER, CUSTOM_BUTTONS, TRACK_IDS
+from . import (
+    Twitter,
+    Client,
+    REPO_LINK,
+    Var,
+    LOGGER,
+    CUSTOM_BUTTONS,
+    TRACK_IDS,
+    CUSTOM_FORMAT,
+)
 from .functions import download_from_url
-
-CACHE_USERNAME = []
 
 
 class TgStreamer(AsyncStream):
@@ -85,13 +91,6 @@ class TgStreamer(AsyncStream):
         if not Var.TAKE_RETWEETS and tweet.get("retweeted_status"):
             return
 
-        # Cache BOT Username
-        try:
-            bot_username = CACHE_USERNAME[0]
-        except IndexError:
-            bot_username = (await Client.get_me()).username
-            CACHE_USERNAME.append(bot_username)
-
         pic, content, hashtags = [], "", ""
         _entities = tweet.get("entities", {})
         entities = _entities.get("media", [])
@@ -139,23 +138,40 @@ class TgStreamer(AsyncStream):
         # So, Its somewhere necessary to seperate out links.
         # to Get Pure Text.
 
-        for word in text.split():
-            if word.startswith("https://twitter.com"):
-                spli_ = word.split("/")
-                if len(spli_) >= 2 and spli_[-2] in ["photo", "video"]:
-                    text = text.replace(word, "")
+        if pic:
+            for word in text.split():
+                if word.startswith("https://twitter.com"):
+                    spli_ = word.split("/")
+                    if len(spli_) >= 2 and spli_[-2] in ["photo", "video"]:
+                        text = text.replace(word, "")
 
-        text = Var.CUSTOM_TEXT.format(
-            SENDER=user["name"],
-            SENDER_USERNAME="@" + username,
-            TWEET_TEXT=text,
-            TWEET_LINK=TWEET_LINK,
-            SENDER_PROFILE=sender_url,
-            SENDER_PROFILE_IMG_URL=user["profile_image_url_https"],
-            _REPO_LINK=REPO_LINK,
-            HASHTAGS=hashtags,
-            BOT_USERNAME=bot_username,
-        )
+        try:
+            text = Var.CUSTOM_TEXT.format(
+                SENDER=user["name"],
+                SENDER_USERNAME="@" + username,
+                TWEET_TEXT=text,
+                TWEET_LINK=TWEET_LINK,
+                SENDER_PROFILE=sender_url,
+                SENDER_PROFILE_IMG_URL=user["profile_image_url_https"],
+                _REPO_LINK=REPO_LINK,
+                HASHTAGS=hashtags,
+                BOT_USERNAME=Client.SELF.username,
+            )
+        except KeyError:
+            LOGGER.error("Your 'CUSTOM_TEXT' seems to be wrong!\nPlease Correct It!")
+            Var.CUSTOM_TEXT = CUSTOM_FORMAT
+            Client.parse_mode = "html"
+            text = CUSTOM_FORMAT.format(
+                SENDER=user["name"],
+                SENDER_USERNAME="@" + username,
+                TWEET_TEXT=text,
+                TWEET_LINK=TWEET_LINK,
+                SENDER_PROFILE=sender_url,
+                SENDER_PROFILE_IMG_URL=user["profile_image_url_https"],
+                _REPO_LINK=REPO_LINK,
+                HASHTAGS=hashtags,
+                BOT_USERNAME=Client.SELF.username,
+            )
         if pic == []:
             pic = None
 

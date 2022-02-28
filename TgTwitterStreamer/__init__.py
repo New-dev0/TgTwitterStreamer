@@ -6,6 +6,7 @@ import logging
 from Configs import Var
 from telethon import TelegramClient
 from telethon.tl.custom import Button
+from telethon.tl.types import User
 from tweepy import API, OAuthHandler
 from tweepy.errors import Unauthorized
 
@@ -33,6 +34,7 @@ Client = TelegramClient(
     api_hash=Var.API_HASH,
 ).start(bot_token=Var.BOT_TOKEN)
 
+Client.SELF = Client.loop.run_until_complete(Client.get_me())
 
 CUSTOM_BUTTONS = None
 TRACK_IDS = None
