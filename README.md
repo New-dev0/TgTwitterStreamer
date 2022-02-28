@@ -34,3 +34,6 @@
 
 ## Support Chat
 - Telegram Group - [@FutureCodesChat](https://t.me/FutureCodesChat)
+
+### Donate
+- [Contact me on Telegram](https://t.me/KarbonCopy) if you would like to donate me for my work!

@@ -31,13 +31,13 @@ class TgStreamer(AsyncStream):
     async def on_connect(self):
         LOGGER.info("<<<---||| Stream Connected |||--->>>")
 
-    def get_urls(self, media):
-        if not media:
+    def get_urls(self, medias):
+        if not medias:
             return []
 
         List = []
 
-        for media in media:
+        for media in medias:
             if media.get("video_info") and media["video_info"].get("variants"):
                 link = media["video_info"]["variants"][0]["url"]
             elif media["type"] == "photo":
@@ -48,16 +48,16 @@ class TgStreamer(AsyncStream):
                 List.append(link)
         return List
 
-    def _favorite(self, id: str):
+    def _favorite(self, id_: str):
         try:
-            Twitter.create_favorite(id)
+            Twitter.create_favorite(id_)
         except Exception as er:
             LOGGER.info("Error while creating a tweet as favorite.")
             LOGGER.exception(er)
 
-    def _do_retweet(self, id: str):
+    def _do_retweet(self, id_: str):
         try:
-            Twitter.retweet(id=id)
+            Twitter.retweet(id=id_)
         except Exception as er:
             LOGGER.info("ERROR while Retweeting a Tweet.")
             LOGGER.exception(er)
