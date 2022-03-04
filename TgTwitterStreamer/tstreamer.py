@@ -234,10 +234,10 @@ class TgStreamer(AsyncStream):
                 LOGGER.exception(er)
 
         if Var.AUTO_LIKE:
-            self._favorite(id=tweet["id"])
+            self._favorite(tweet["id"])
 
         if Var.AUTO_RETWEET:
-            self._do_retweet(id=tweet["id"])
+            self._do_retweet(tweet["id"])
 
         if Var.AUTO_PIN and MSG:
             single_msg = MSG if not isinstance(MSG, list) else MSG[0]
