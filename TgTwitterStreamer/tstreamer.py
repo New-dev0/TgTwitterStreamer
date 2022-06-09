@@ -2,9 +2,9 @@
 # Github.com/New-dev0/TgTwitterStreamer
 # GNU General Public License v3.0
 
+
 import os
 import asyncio
-from aiohttp import ClientSession
 
 from html import unescape
 from telethon.tl.custom import Button, Message
@@ -13,7 +13,7 @@ from telethon.errors.rpcerrorlist import (
     WebpageCurlFailedError,
     MediaInvalidError,
 )
-from tweepy.asynchronous import AsyncStream
+from tweepy.asynchronous import AsyncStreamingClient
 from . import (
     Twitter,
     Client,
@@ -21,43 +21,38 @@ from . import (
     Var,
     LOGGER,
     CUSTOM_BUTTONS,
-    TRACK_IDS,
     CUSTOM_FORMAT,
 )
 from .functions import download_from_url
 
 
-class TgStreamer(AsyncStream):
+class TgStreamer(AsyncStreamingClient):
     async def on_connect(self):
         LOGGER.info("<<<---||| Stream Connected |||--->>>")
 
     def get_urls(self, medias):
         if not medias:
             return []
-
         List = []
-
         for media in medias:
-            if media.get("video_info") and media["video_info"].get("variants"):
-                link = media["video_info"]["variants"][0]["url"]
-            elif media["type"] == "photo":
-                link = media["media_url_https"]
+            if media.data.get("variants"):
+                link = media.data["variants"][0]["url"]
             else:
-                link = None
-            if link and "tweet_video_thumb" not in link:
+                link = media.url or media.preview_image_url
+            if link and not "tweet_video_thumb" in link:
                 List.append(link)
         return List
 
-    def _favorite(self, id_: str):
+    async def _favorite(self, id_: str):
         try:
-            Twitter.create_favorite(id_)
+            await Twitter.create_favorite(id_)
         except Exception as er:
             LOGGER.info("Error while creating a tweet as favorite.")
             LOGGER.exception(er)
 
-    def _do_retweet(self, id_: str):
+    async def _do_retweet(self, id_: str):
         try:
-            Twitter.retweet(id=id_)
+            await Twitter.retweet(id=id_)
         except Exception as er:
             LOGGER.info("ERROR while Retweeting a Tweet.")
             LOGGER.exception(er)
@@ -72,106 +67,70 @@ class TgStreamer(AsyncStream):
         except Exception as er:
             LOGGER.info(f"Error while pin: {er}")
 
-    async def on_status(self, status):
-        tweet = status._json
-        user = tweet["user"]
-        # LOGGER.info(tweet)
+    def format_tweet(*args, **kwargs):
+        try:
+            return Var.CUSTOM_TEXT.format(**kwargs)
+        except KeyError:
+            LOGGER.error("Your 'CUSTOM_TEXT' seems to be wrong!\nPlease Correct It!")
+            Var.CUSTOM_TEXT = CUSTOM_FORMAT
+            Client.parse_mode = "html"
+            return CUSTOM_FORMAT.format(**kwargs)
 
-        if (
-            not Var.TRACK_WORDS
-            and Var.TRACK_USERS
-            and not Var.TAKE_OTHERS_REPLY
-            and not user["id_str"] in TRACK_IDS
-        ):
+    async def on_response(self, response):
+        try:
+            await self._on_response(response)
+        except Exception as er:
+            LOGGER.exception(er)
+
+    async def _on_response(self, response):
+        include = response.includes
+        tweet = response.data
+        user = include.get("users", [])[0]
+
+        if not Var.TAKE_REPLIES and tweet.in_reply_to_user_id:
             return
 
-        if not Var.TAKE_REPLIES and tweet["in_reply_to_status_id"]:
-            return
-
-        if not Var.TAKE_RETWEETS and tweet.get("retweeted_status"):
-            return
-
-        pic, content, hashtags = [], "", ""
+        pic = self.get_urls(include.get("media"))
+        hashtags = None
         _entities = tweet.get("entities", {})
-        entities = _entities.get("media", [])
-        extended_entities = tweet.get("extended_entities", {}).get("media")
-        extended_tweet = (
-            tweet.get("extended_tweet", {}).get("entities", {}).get("media")
-        )
-        all_urls = set()
-        for media in (entities, extended_entities, extended_tweet):
-            urls = self.get_urls(media)
-            all_urls.update(set(urls))
-        for pik in all_urls:
-            pic.append(pik)
         if _entities and _entities.get("hashtags"):
-            hashtags = "".join(f"#{a['text']} " for a in _entities["hashtags"])
-        content = tweet.get("extended_tweet", {}).get("full_text")
+            hashtags = " ".join(f"#{a['tag']}" for a in _entities["hashtags"])
 
-        username = user["screen_name"]
+        username = user["username"]
         sender_url = "https://twitter.com/" + username
         TWEET_LINK = f"{sender_url}/status/{tweet['id']}"
 
-        if content and (len(content) < 1000):
-            text = content
-        else:
-            text = tweet["text"]
+        text = tweet["text"]
 
         # Clear unexpected tags with html.unescape()
         text = unescape(text)
-
-        if Var.MUST_INCLUDE and Var.MUST_INCLUDE.lower() not in text.lower():
-            return
-
-        if Var.MUST_EXCLUDE and Var.MUST_EXCLUDE.lower() in text.lower():
-            return
-
-        spli = text.split()
-        async with ClientSession() as ses:
-            for on in spli:
-                # replace t.co urls
-                if on.startswith("https://t.co/"):
-                    async with ses.get(on) as out:
-                        text = text.replace(on, str(out.url))
+        for url in _entities.get("urls", []):
+            if url["expanded_url"].startswith("https://twitter.com/") and url[
+                "expanded_url"
+            ].split("/")[-2] in ["photo", "video"]:
+                replace = ""
+            else:
+                replace = url["expanded_url"]
+            text = text.replace(url["url"], replace)
 
         # Twitter Repeats Media Url in Text.
         # So, Its somewhere necessary to seperate out links.
         # to Get Pure Text.
 
-        if pic:
-            for word in text.split():
-                if word.startswith("https://twitter.com"):
-                    spli_ = word.split("/")
-                    if len(spli_) >= 2 and spli_[-2] in ["photo", "video"]:
-                        text = text.replace(word, "")
+        if not (text or pic):
+            return
 
-        try:
-            text = Var.CUSTOM_TEXT.format(
-                SENDER=user["name"],
-                SENDER_USERNAME="@" + username,
-                TWEET_TEXT=text,
-                TWEET_LINK=TWEET_LINK,
-                SENDER_PROFILE=sender_url,
-                SENDER_PROFILE_IMG_URL=user["profile_image_url_https"],
-                _REPO_LINK=REPO_LINK,
-                HASHTAGS=hashtags,
-                BOT_USERNAME=Client.SELF.username,
-            )
-        except KeyError:
-            LOGGER.error("Your 'CUSTOM_TEXT' seems to be wrong!\nPlease Correct It!")
-            Var.CUSTOM_TEXT = CUSTOM_FORMAT
-            Client.parse_mode = "html"
-            text = CUSTOM_FORMAT.format(
-                SENDER=user["name"],
-                SENDER_USERNAME="@" + username,
-                TWEET_TEXT=text,
-                TWEET_LINK=TWEET_LINK,
-                SENDER_PROFILE=sender_url,
-                SENDER_PROFILE_IMG_URL=user["profile_image_url_https"],
-                _REPO_LINK=REPO_LINK,
-                HASHTAGS=hashtags,
-                BOT_USERNAME=Client.SELF.username,
-            )
+        text = self.format_tweet(
+            SENDER=user["name"],
+            SENDER_USERNAME="@" + username,
+            TWEET_TEXT=text,
+            TWEET_LINK=TWEET_LINK,
+            SENDER_PROFILE=sender_url,
+            SENDER_PROFILE_IMG_URL=user["profile_image_url"],
+            _REPO_LINK=REPO_LINK,
+            HASHTAGS=hashtags,
+            BOT_USERNAME=Client.SELF.username,
+        )
         if pic == []:
             pic = None
 
@@ -234,10 +193,10 @@ class TgStreamer(AsyncStream):
                 LOGGER.exception(er)
 
         if Var.AUTO_LIKE:
-            self._favorite(tweet["id"])
+            await self._favorite(tweet["id"])
 
         if Var.AUTO_RETWEET:
-            self._do_retweet(tweet["id"])
+            await self._do_retweet(tweet["id"])
 
         if Var.AUTO_PIN and MSG:
             single_msg = MSG if not isinstance(MSG, list) else MSG[0]

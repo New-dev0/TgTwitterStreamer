@@ -14,6 +14,7 @@ class Var:
     BOT_TOKEN = config("BOT_TOKEN", None)
 
     # Twitter Vars
+    BEARER_TOKEN = config("BEARER_TOKEN", None)
     CONSUMER_KEY = config("CONSUMER_KEY", None)
     CONSUMER_SECRET = config("CONSUMER_SECRET", None)
     ACCESS_TOKEN = config("ACCESS_TOKEN", None)
@@ -50,23 +51,17 @@ class Var:
     TAKE_REPLIES = config("TAKE_REPLIES", default=False, cast=bool)
     # Whether to Take Retweets or not.
     TAKE_RETWEETS = config("TAKE_RETWEETS", default=False, cast=bool)
-    # Whether to take replies on post of user filled in TRACK_USERS.
-    TAKE_OTHERS_REPLY = config("TAKE_OTHERS_REPLY", default=False, cast=bool)
 
     # An Addition word checking filters.
     MUST_INCLUDE = config("MUST_INCLUDE", default=None)
-    MUST_EXCLUDE = config("MUST_EXCLUDE", default=None)
+    EXCLUDE = config("EXCLUDE_WORDS", default=None)
+    if EXCLUDE:
+        EXCLUDE = EXCLUDE.split("|")
 
     # Automations
     AUTO_LIKE = config("AUTO_LIKE", default=False, cast=bool)
     AUTO_RETWEET = config("AUTO_RETWEET", default=False, cast=bool)
     AUTO_PIN = config("AUTO_PIN", default=False, cast=bool)
-
-    _filter_level = None
-    # There can be Wide Range of Tweets.
-    if TRACK_WORDS and not TRACK_USERS:
-        _filter_level = "low"
-    FILTER_LEVEL = config("FILTER_LEVEL", default=_filter_level)
 
     # Filter Language of Tweets
     LANGUAGES = config("LANGUAGES", default=None)

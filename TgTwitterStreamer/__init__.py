@@ -6,7 +6,7 @@ import logging
 from Configs import Var
 from telethon import TelegramClient
 from telethon.tl.custom import Button
-from telethon.tl.types import User
+from tweepy.asynchronous import AsyncClient, AsyncStreamingClient
 from tweepy import API, OAuthHandler
 from tweepy.errors import Unauthorized
 
@@ -19,11 +19,13 @@ logging.basicConfig(
 )
 
 # Tweepy's Client
-
-auth = OAuthHandler(Var.CONSUMER_KEY, Var.CONSUMER_SECRET)
-auth.set_access_token(Var.ACCESS_TOKEN, Var.ACCESS_TOKEN_SECRET)
-Twitter = API(auth)
-
+Twitter = AsyncClient(
+    Var.BEARER_TOKEN,
+    Var.CONSUMER_KEY,
+    Var.CONSUMER_SECRET,
+    Var.ACCESS_TOKEN,
+    Var.ACCESS_TOKEN_SECRET,
+)
 
 # Telegram's Client
 # Used for sending messages to Chat.
@@ -37,7 +39,7 @@ Client = TelegramClient(
 Client.SELF = Client.loop.run_until_complete(Client.get_me())
 
 CUSTOM_BUTTONS = None
-TRACK_IDS = None
+TRACK_USERS = None
 TRACK_WORDS = None
 
 
@@ -95,19 +97,7 @@ LOGGER.info("<<--- Setting Up Bot ! --->>")
 
 
 if Var.TRACK_USERS:
-    TRACK_IDS = []
-    for username in Var.TRACK_USERS.split(" "):
-        try:
-            user = Twitter.get_user(screen_name=username)._json
-            TRACK_IDS.append(user["id_str"])
-            LOGGER.info(
-                f"<<--- Added {user['screen_name']}" + " to TRACK - LIST ! --->>"
-            )
-        except Unauthorized as er:
-            LOGGER.exception(er)
-            exit()
-        except Exception as e:
-            LOGGER.exception(e)
+    TRACK_USERS = Var.TRACK_USERS.split(" ")
 
 
 if Var.TRACK_WORDS:

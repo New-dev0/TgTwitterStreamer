@@ -17,8 +17,13 @@
             "description": "Get it from https://my.telegram.org/apps",
             "value": "eb06d4abfb49dc3eeb1aeb98ae0f581e"
         },
+        "BEARER_TOKEN": {
+            "description": "Read New-dev0.github.io/tgtwitterbot to Know About it.",
+            "value": ""
+        },
         "CONSUMER_KEY": {
             "description": "Read New-dev0.github.io/tgtwitterbot to Know About it.",
+            "required": false,
             "value": ""
         },
         "TRACK_USERS": {
@@ -31,14 +36,17 @@
         },
         "CONSUMER_SECRET": {
             "description": "Read New-dev0.github.io/tgtwitterbot to Know About it.",
+            "required": false,
             "value": ""
         },
         "ACCESS_TOKEN": {
             "description": "Read New-dev0.github.io/tgtwitterbot to Know About it.",
+            "required": false,
             "value": ""
         },
         "ACCESS_TOKEN_SECRET": {
             "description": "Read New-dev0.github.io/tgtwitterbot to Know About it.",
+            "required": false,
             "value": ""
         }
     },
