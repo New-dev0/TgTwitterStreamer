@@ -12,6 +12,7 @@
 - `TWEET_LINK` : `Tweet's Url..`
 - `HASHTAGS` : `To get HASHTAGS present in Twitter Post.`
 
+- `REPLY_TAG` : `Message linking to replied post (if any)`
 - `SENDER` : `For Sender's Full Name`
 - `SENDER_USERNAME` : `For Sender's Username`
 - `SENDER_PROFILE` : `Sender's Profile Url..`

@@ -47,8 +47,15 @@ class Var:
     START_MESSAGE = config("START_MESSAGE", None)
     DISABLE_START = config("DISABLE_START", default=False, cast=bool)
 
+    REPLIED_NOTE = config(
+        "REPLY_FORMAT",
+        default="[Replied to this post]({REPLY_URL})\n"
+        if CUSTOM_TEXT
+        else "<a href='{REPLY_URL}'>[Replied to this Post]</a>\n",
+    )
+
     # Whether should take messages, which are reply to other post.
-    TAKE_REPLIES = config("TAKE_REPLIES", default=False, cast=bool)
+    TAKE_REPLIES = config("TAKE_REPLIES", default=True, cast=bool)
     # Whether to Take Retweets or not.
     TAKE_RETWEETS = config("TAKE_RETWEETS", default=False, cast=bool)
 

@@ -2,7 +2,7 @@
 # Github.com/New-dev0/TgTwitterStreamer
 # GNU General Public License v3.0
 
-import aiofiles
+
 from aiohttp import ClientSession
 
 
@@ -20,7 +20,6 @@ async def download_from_url(url, name=None):
 
     async with ClientSession() as ses:
         async with ses.get(url) as out:
-            file = await aiofiles.open(name, "wb")
-            await file.write(await out.read())
-            await file.close()
+            with open(name, "wb") as f:
+                f.write(await out.read())
         return name

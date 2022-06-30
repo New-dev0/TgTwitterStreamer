@@ -7,20 +7,18 @@ import logging
 from Configs import Var
 from telethon import TelegramClient
 from telethon.tl.custom import Button
-from tweepy.asynchronous import AsyncClient, AsyncStreamingClient
-from tweepy import API, OAuthHandler
-from tweepy.errors import Unauthorized
+from tweepy.asynchronous import AsyncClient
 
 REPO_LINK = "https://github.com/New-dev0/TgTwitterStreamer"
 
 _DEBUG = "--debug" in sys.argv
 
-LOGGER = logging.getLogger("TgTwitterStreamer")
-LOGGER.setLevel(level=logging.INFO if not _DEBUG else logging.DEBUG)
 logging.basicConfig(
-    format="[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s", level=logging.INFO
+    format="[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s",
+    level=logging.INFO if not _DEBUG else logging.DEBUG,
 )
 
+LOGGER = logging.getLogger("TgTwitterStreamer")
 LOGGER.debug("Starting in debug mode..")
 
 # Tweepy's Client
@@ -35,10 +33,11 @@ Twitter = AsyncClient(
 # Telegram's Client
 # Used for sending messages to Chat.
 
+_Tlog = logging.getLogger("Telethon")
+_Tlog.setLevel(logging.INFO)
+
 Client = TelegramClient(
-    None,
-    api_id=Var.API_ID,
-    api_hash=Var.API_HASH,
+    None, api_id=Var.API_ID, api_hash=Var.API_HASH, base_logger=_Tlog
 ).start(bot_token=Var.BOT_TOKEN)
 
 Client.SELF = Client.loop.run_until_complete(Client.get_me())
@@ -50,7 +49,7 @@ TRACK_WORDS = None
 
 CUSTOM_FORMAT = """
 🎊 <b><a href='{SENDER_PROFILE}'>{SENDER}</a></b> :
-
+{REPLY_TAG}
 🍿 {TWEET_TEXT}
 
 • Powered by <b><a href="{_REPO_LINK}">TgTwitterStreamer</a></b>

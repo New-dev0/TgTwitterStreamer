@@ -2,7 +2,7 @@
 # Github.com/New-dev0/TgTwitterStreamer
 # GNU General Public License v3.0
 
-import re, asyncio
+import re
 from telethon.tl.custom import Button
 from . import LOGGER, REPO_LINK, TRACK_WORDS, TRACK_USERS
 
@@ -66,7 +66,7 @@ if __name__ == "__main__":
         old_rules = (await Stream.get_rules()).data
 
         if old_rules:
-            LOGGER.debug("old rules: " + old_rules)
+            LOGGER.debug("old rules: " + str(old_rules))
             del_ids = []
             for _rule in old_rules:
                 if _rule.value != rule:
@@ -76,12 +76,16 @@ if __name__ == "__main__":
             if del_ids:
                 await Stream.delete_rules(del_ids)
         if add_rule:
-            LOGGER.debug("Applying rule: "+ rule)
+            LOGGER.debug("Applying rule: " + rule)
             await Stream.add_rules(StreamRule(rule))
         Stream.filter(
-            expansions=["author_id", "attachments.media_keys"],
+            expansions=[
+                "author_id",
+                "attachments.media_keys",
+                "referenced_tweets.id.author_id",
+            ],
             user_fields=["profile_image_url", "name", "username"],
-            tweet_fields=["entities", "in_reply_to_user_id"],
+            tweet_fields=["entities", "in_reply_to_user_id", "referenced_tweets"],
             media_fields=["variants", "preview_image_url", "url"],
         )
 

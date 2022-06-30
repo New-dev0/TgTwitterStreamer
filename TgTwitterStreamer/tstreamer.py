@@ -84,8 +84,10 @@ class TgStreamer(AsyncStreamingClient):
 
     async def _on_response(self, response):
         include = response.includes
+        LOGGER.debug(f"include, {include}")
         tweet = response.data
-        user = include.get("users", [])[0]
+        users = include.get("users", [])
+        user = users[0]
 
         if not Var.TAKE_REPLIES and tweet.in_reply_to_user_id:
             return
@@ -120,11 +122,30 @@ class TgStreamer(AsyncStreamingClient):
         if not (text or pic):
             return
 
+        repta = ""
+        if tweet.in_reply_to_user_id:
+            for twt in tweet.referenced_tweets:
+                if twt["type"] == "replied_to":
+                    usern = None
+                    author_id = None
+                    for twee in include.get("tweets", []):
+                        if twee["id"] == twt["id"]:
+                            author_id = twee["author_id"]
+                            break
+                    for use in users:
+                        if use.id == author_id:
+                            usern = use["username"]
+                            break
+                    if usern:
+                        repta = f"https://twitter.com/{usern}/status/{tweet.id}"
+                        break
+
         text = self.format_tweet(
             SENDER=user["name"],
             SENDER_USERNAME="@" + username,
             TWEET_TEXT=text,
             TWEET_LINK=TWEET_LINK,
+            REPLY_TAG=Var.REPLIED_NOTE.format(REPLY_URL=repta),
             SENDER_PROFILE=sender_url,
             SENDER_PROFILE_IMG_URL=user["profile_image_url"],
             _REPO_LINK=REPO_LINK,
