@@ -4,7 +4,7 @@
 
 import re, asyncio
 from telethon.tl.custom import Button
-from . import REPO_LINK, TRACK_WORDS, TRACK_USERS
+from . import LOGGER, REPO_LINK, TRACK_WORDS, TRACK_USERS
 
 from .tstreamer import TgStreamer, Var, Client
 from tweepy.asynchronous.streaming import StreamRule
@@ -47,7 +47,7 @@ def make_rules() -> str:
         if len(TRACK_USERS) == 1:
             rule += f" from:{TRACK_USERS[0]}"
         else:
-            rule += " (" + " OR ".join(f"from:{user}" for user in [TRACK_USERS]) + ") "
+            rule += " (" + " OR ".join(f"from:{user}" for user in TRACK_USERS) + ") "
     if TRACK_WORDS:
         rule += " (" + " OR ".join(TRACK_WORDS) + ")"
     if Var.EXCLUDE:
@@ -66,6 +66,7 @@ if __name__ == "__main__":
         old_rules = (await Stream.get_rules()).data
 
         if old_rules:
+            LOGGER.debug("old rules: " + old_rules)
             del_ids = []
             for _rule in old_rules:
                 if _rule.value != rule:
@@ -75,6 +76,7 @@ if __name__ == "__main__":
             if del_ids:
                 await Stream.delete_rules(del_ids)
         if add_rule:
+            LOGGER.debug("Applying rule: "+ rule)
             await Stream.add_rules(StreamRule(rule))
         Stream.filter(
             expansions=["author_id", "attachments.media_keys"],

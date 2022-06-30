@@ -2,6 +2,7 @@
 # Github.com/New-dev0/TgTwitterStreamer
 # GNU General Public License v3.0
 
+import sys
 import logging
 from Configs import Var
 from telethon import TelegramClient
@@ -12,11 +13,15 @@ from tweepy.errors import Unauthorized
 
 REPO_LINK = "https://github.com/New-dev0/TgTwitterStreamer"
 
+_DEBUG = "--debug" in sys.argv
+
 LOGGER = logging.getLogger("TgTwitterStreamer")
-LOGGER.setLevel(level=logging.INFO)
+LOGGER.setLevel(level=logging.INFO if not _DEBUG else logging.DEBUG)
 logging.basicConfig(
     format="[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s", level=logging.INFO
 )
+
+LOGGER.debug("Starting in debug mode..")
 
 # Tweepy's Client
 Twitter = AsyncClient(
@@ -97,7 +102,7 @@ LOGGER.info("<<--- Setting Up Bot ! --->>")
 
 
 if Var.TRACK_USERS:
-    TRACK_USERS = Var.TRACK_USERS.split(" ")
+    TRACK_USERS = Var.TRACK_USERS.strip().split(" ")
 
 
 if Var.TRACK_WORDS:
