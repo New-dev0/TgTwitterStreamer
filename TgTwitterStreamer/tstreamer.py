@@ -145,7 +145,7 @@ class TgStreamer(AsyncStreamingClient):
             SENDER_USERNAME="@" + username,
             TWEET_TEXT=text,
             TWEET_LINK=TWEET_LINK,
-            REPLY_TAG=Var.REPLIED_NOTE.format(REPLY_URL=repta),
+            REPLY_TAG="" if not repta else Var.REPLIED_NOTE.format(REPLY_URL=repta),
             SENDER_PROFILE=sender_url,
             SENDER_PROFILE_IMG_URL=user["profile_image_url"],
             _REPO_LINK=REPO_LINK,
