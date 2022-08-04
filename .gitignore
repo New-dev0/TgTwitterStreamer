@@ -7,3 +7,4 @@ ignore*
 *.jpg
 *.session
 test*
+*.email

@@ -45,14 +45,14 @@ class TgStreamer(AsyncStreamingClient):
 
     async def _favorite(self, id_: str):
         try:
-            await Twitter.create_favorite(id_)
+            await Twitter.like(tweet_id=id_)
         except Exception as er:
             LOGGER.info("Error while creating a tweet as favorite.")
             LOGGER.exception(er)
 
     async def _do_retweet(self, id_: str):
         try:
-            await Twitter.retweet(id=id_)
+            await Twitter.retweet(tweet_id=id_)
         except Exception as er:
             LOGGER.info("ERROR while Retweeting a Tweet.")
             LOGGER.exception(er)
