@@ -5,7 +5,7 @@
 # <p align="center"><a href="https://github.com/New-dev0/TgTwitterStreamer"><img src="https://github-readme-stats.vercel.app/api/pin?username=New-dev0&show_icons=true&theme=buefy&hide_border=false&repo=TgTwitterStreamer"></a></p>
 
 
-#### A Bot to get and send Realtime Tweets to a Specific Chats from Desired Persons on Twitter to Telegram Chat with bulk of addition customizable option.
+#### A bot to get and send tweets to specific telegram chats from desired users on twitter in real time with a bulk of additional customization options.
 > It uses Telethon (Asynchronous Telegram Client library) and Tweepy Library to interact with Twitter API.
 
 #
