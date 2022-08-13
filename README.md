@@ -22,7 +22,7 @@
 - Detailed information about `ENV Vars` can be found [Here](./Guides/Vars.md).
 
 ## Deploy to Railway
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https%3A%2F%2Fgithub.com%2FNew-dev0%2FTgTwitterStreamer&envs=CONSUMER_KEY%2CCONSUMER_SECRET%2CACCESS_TOKEN%2CACCESS_TOKEN_SECRET%2CAPI_ID%2CAPI_HASH%2CBOT_TOKEN%2CTO_CHAT%2CTRACK_USERS&optionalEnvs=API_ID%2CAPI_HASH%2CTRACK_USERS&CONSUMER_KEYDesc=Twitter%27s+Consumer+Api+Key&CONSUMER_SECRETDesc=Twitter%27s+Consumer+Api+Secret&ACCESS_TOKENDesc=Twitter%27s+app+access+token&ACCESS_TOKEN_SECRETDesc=Twitter%27s+access+token+secret&API_IDDesc=Telegram%27s+API+ID&API_HASHDesc=Telegram%27s+Api+Hash&BOT_TOKENDesc=Telegram+Bot+token.+Get+it+from+%40Botfather&TO_CHATDesc=Username%2Fids+to+send+tweets.+%28seperate+by+space+if+more%29&TRACK_USERSDesc=Twitter+username+seperated+by+space+to+track&referralCode=Newdev0)
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template/eERa-1)
 
 ## Deploy to Heroku
 - To Deploy to Heroku, follow this [Guide](./Guides/deploy-heroku.md)
