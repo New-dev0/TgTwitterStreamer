@@ -5,7 +5,7 @@
 # <p align="center"><a href="https://github.com/New-dev0/TgTwitterStreamer"><img src="https://github-readme-stats.vercel.app/api/pin?username=New-dev0&show_icons=true&theme=buefy&hide_border=false&repo=TgTwitterStreamer"></a></p>
 
 
-#### A Bot to get and send Realtime Tweets to a Specific Chats from Desired Persons on Twitter to Telegram Chat with bulk of addition customizable option.
+#### A bot to get and send tweets to specific telegram chats from desired users on twitter in real time with a bulk of additional customization options.
 > It uses Telethon (Asynchronous Telegram Client library) and Tweepy Library to interact with Twitter API.
 
 #
@@ -22,7 +22,7 @@
 - Detailed information about `ENV Vars` can be found [Here](./Guides/Vars.md).
 
 ## Deploy to Railway
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https%3A%2F%2Fgithub.com%2FNew-dev0%2FTgTwitterStreamer&envs=CONSUMER_KEY%2CCONSUMER_SECRET%2CACCESS_TOKEN%2CACCESS_TOKEN_SECRET%2CAPI_ID%2CAPI_HASH%2CBOT_TOKEN%2CTO_CHAT%2CTRACK_USERS&optionalEnvs=API_ID%2CAPI_HASH%2CTRACK_USERS&CONSUMER_KEYDesc=Twitter%27s+Consumer+Api+Key&CONSUMER_SECRETDesc=Twitter%27s+Consumer+Api+Secret&ACCESS_TOKENDesc=Twitter%27s+app+access+token&ACCESS_TOKEN_SECRETDesc=Twitter%27s+access+token+secret&API_IDDesc=Telegram%27s+API+ID&API_HASHDesc=Telegram%27s+Api+Hash&BOT_TOKENDesc=Telegram+Bot+token.+Get+it+from+%40Botfather&TO_CHATDesc=Username%2Fids+to+send+tweets.+%28seperate+by+space+if+more%29&TRACK_USERSDesc=Twitter+username+seperated+by+space+to+track&referralCode=Newdev0)
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template/eERa-1)
 
 ## Deploy to Heroku
 - To Deploy to Heroku, follow this [Guide](./Guides/deploy-heroku.md)
