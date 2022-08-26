@@ -5,7 +5,7 @@
 
 ### Mandatory
 ```
--    BEARER_ID
+-    BEARER_TOKEN
 ```
 #### Optional [Required only, if AUTO_RETWEET or AUTO_LIKE]
 ```

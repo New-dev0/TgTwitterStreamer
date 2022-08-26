@@ -2,12 +2,15 @@
 # Github.com/New-dev0/TgTwitterStreamer
 # GNU General Public License v3.0
 
-import sys
+import sys, os
 import logging
 from Configs import Var
 from telethon import TelegramClient
 from telethon.tl.custom import Button
 from tweepy.asynchronous import AsyncClient
+
+if not os.path.exists(Var.MEDIA_DL_PATH):
+    os.mkdir(Var.MEDIA_DL_PATH)
 
 REPO_LINK = "https://github.com/New-dev0/TgTwitterStreamer"
 
@@ -19,6 +22,12 @@ logging.basicConfig(
 )
 
 LOGGER = logging.getLogger("TgTwitterStreamer")
+
+if Var.LOG_FILE:
+    if not _DEBUG and os.path.exists(Var.LOG_FILE):
+        os.remove(Var.LOG_FILE)
+    LOGGER.addHandler(logging.FileHandler(Var.LOG_FILE, encoding="utf-8"))
+
 LOGGER.debug("Starting in debug mode..")
 
 # Tweepy's Client

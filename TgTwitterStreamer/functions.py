@@ -2,8 +2,8 @@
 # Github.com/New-dev0/TgTwitterStreamer
 # GNU General Public License v3.0
 
-
 from aiohttp import ClientSession
+from Configs import Var
 
 
 async def download_from_url(url, name=None):
@@ -17,7 +17,7 @@ async def download_from_url(url, name=None):
         name = url.split("/")[-1]
         if "?tag=" in name:
             name = name.split("?tag=")[0]
-
+    name = f"{Var.MEDIA_DL_PATH}/{name}"
     async with ClientSession() as ses:
         async with ses.get(url) as out:
             with open(name, "wb") as f:

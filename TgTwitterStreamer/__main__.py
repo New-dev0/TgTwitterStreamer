@@ -32,7 +32,7 @@ async def callback_query(event):
     await event.answer("I'm Alive , No Need to click button..")
 
 
-# For people, deploying multiple apps on one bot. (including "me")
+# For people, deploying multiple apps on one bot.
 
 if not Var.DISABLE_START:
     Client.add_event_handler(start_message, NewMessage(pattern="^/start$"))
@@ -47,7 +47,7 @@ def make_rules() -> str:
         if len(TRACK_USERS) == 1:
             rule += f" from:{TRACK_USERS[0]}"
         else:
-            rule += " (" + " OR ".join(f"from:{user}" for user in TRACK_USERS) + ") "
+            rule += " (" + " OR ".join(f"from:{user}" for user in TRACK_USERS) + ")"
     if TRACK_WORDS:
         rule += " (" + " OR ".join(TRACK_WORDS) + ")"
     if Var.EXCLUDE:

@@ -123,7 +123,7 @@ class TgStreamer(AsyncStreamingClient):
             return
 
         repta = ""
-        if tweet.in_reply_to_user_id:
+        if tweet.in_reply_to_user_id and tweet.referenced_tweets:
             for twt in tweet.referenced_tweets:
                 if twt["type"] == "replied_to":
                     usern = None
@@ -236,3 +236,8 @@ class TgStreamer(AsyncStreamingClient):
 
     async def on_connection_error(self):
         LOGGER.info("<<---|| Connection Error ||--->>")
+
+    async def on_errors(self, errors):
+        LOGGER.debug(errors)
+        for error in errors:
+            LOGGER.info(f"{error['resource_id']}: {error['detail']}")

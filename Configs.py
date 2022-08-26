@@ -2,6 +2,7 @@
 # Github.com/New-dev0/TgTwitterStreamer
 # GNU General Public License v3.0
 
+from email.policy import default
 from decouple import config
 
 
@@ -72,3 +73,6 @@ class Var:
 
     # Filter Language of Tweets
     LANGUAGES = config("LANGUAGES", default=None)
+
+    MEDIA_DL_PATH = config("MEDIA_DL_PATH", default="media")
+    LOG_FILE = config("LOG_FILE", default="Stream.log")
