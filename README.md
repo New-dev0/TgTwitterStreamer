@@ -30,7 +30,7 @@
 ## Contributing
 - Any sort of Contributions are welcomed!
 
-> Thanks all, who have stared the project and found it helpful. ❤️
+> Thanks to everyone who has starred the project, I hope you found it helpful! ❤️
 
 ## Support Chat
 - Telegram Group - [@FutureCodesChat](https://t.me/FutureCodesChat)
