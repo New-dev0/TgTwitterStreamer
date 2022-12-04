@@ -31,10 +31,8 @@ class TgStreamer(AsyncStreamingClient):
         LOGGER.info("<<<---||| Stream Connected |||--->>>")
 
     def get_urls(self, medias):
-        if not medias:
-            return []
         List = []
-        for media in medias:
+        for media in (medias or []):
             if media.data.get("variants"):
                 link = media.data["variants"][0]["url"]
             else:
@@ -77,12 +75,6 @@ class TgStreamer(AsyncStreamingClient):
             return CUSTOM_FORMAT.format(**kwargs)
 
     async def on_response(self, response):
-        try:
-            await self._on_response(response)
-        except Exception as er:
-            LOGGER.exception(er)
-
-    async def _on_response(self, response):
         include = response.includes
         LOGGER.debug(f"include, {include}")
         tweet = response.data
@@ -102,10 +94,9 @@ class TgStreamer(AsyncStreamingClient):
         sender_url = "https://twitter.com/" + username
         TWEET_LINK = f"{sender_url}/status/{tweet['id']}"
 
-        text = tweet["text"]
-
         # Clear unexpected tags with html.unescape()
-        text = unescape(text)
+        text = unescape(tweet["text"])
+
         for url in _entities.get("urls", []):
             if url["expanded_url"].startswith("https://twitter.com/") and url[
                 "expanded_url"
@@ -152,7 +143,7 @@ class TgStreamer(AsyncStreamingClient):
             HASHTAGS=hashtags,
             BOT_USERNAME=Client.SELF.username,
         )
-        if pic == []:
+        if not pic:
             pic = None
 
         button, MSG = None, None
@@ -163,55 +154,11 @@ class TgStreamer(AsyncStreamingClient):
         elif not Var.DISABLE_BUTTON:
             button = Button.url(text=Var.BUTTON_TITLE, url=TWEET_LINK)
 
-        is_pic_alone = bool(not pic or len(pic) == 1)
+        is_pic_alone = not pic or len(pic) == 1
         _photos = pic[0] if (pic and is_pic_alone) else pic
-        if _photos == []:
-            _photos = None
+
         for chat in Var.TO_CHAT:
-            try:
-                MSG = await Client.send_message(
-                    chat,
-                    text if (is_pic_alone or Var.DISABLE_BUTTON) else None,
-                    link_preview=False,
-                    file=_photos,
-                    buttons=button,
-                )
-                msg_id = MSG[0].id if isinstance(MSG, list) else MSG.id
-                if not is_pic_alone and text and button:
-                    await Client.send_message(
-                        chat, text, reply_to=msg_id, link_preview=False, buttons=button
-                    )
-            except (WebpageCurlFailedError, MediaInvalidError) as er:
-                LOGGER.info(f"Handling <{er}>")
-                try:
-                    _photos = await download_from_url(_photos)
-                    MSG = await Client.send_message(
-                        chat,
-                        text if (is_pic_alone or Var.DISABLE_BUTTON) else None,
-                        link_preview=False,
-                        file=_photos,
-                        buttons=button,
-                    )
-                    msg_id = MSG[0].id if isinstance(MSG, list) else MSG.id
-                    if not is_pic_alone and text and button:
-                        await Client.send_message(
-                            chat,
-                            text,
-                            reply_to=msg_id,
-                            link_preview=False,
-                            buttons=button,
-                        )
-
-                    for path in _photos:
-                        os.remove(path)
-
-                except Exception as er:
-                    LOGGER.exception(er)
-            except FloodWaitError as fw:
-                LOGGER.exception(fw)
-                await asyncio.sleep(fw.seconds + 10)
-            except Exception as er:
-                LOGGER.exception(er)
+            await self.send_tweet(chat, text, _photos, button, is_pic_alone)
 
         if Var.AUTO_LIKE:
             await self._favorite(tweet["id"])
@@ -223,6 +170,49 @@ class TgStreamer(AsyncStreamingClient):
             single_msg = MSG if not isinstance(MSG, list) else MSG[0]
             await self._pin(single_msg)
 
+    async def send_tweet(self, chat, text, photos, button, is_pic_alone):
+        textmsg = text if (is_pic_alone or Var.DISABLE_BUTTON) else None
+        try:
+            MSG = await Client.send_message(
+                chat,
+                textmsg,
+                link_preview=False,
+                file=photos,
+                buttons=button,
+            )
+            msg = MSG[0] if isinstance(MSG, list) else MSG
+            if not is_pic_alone and text and button:
+                await msg.reply(text, link_preview=False, buttons=button)
+        except (WebpageCurlFailedError, MediaInvalidError) as er:
+            LOGGER.warning(f"Handling <{er}>")
+            try:
+                photos = await download_from_url(photos)
+                MSG = await Client.send_message(
+                    chat,
+                    textmsg,
+                    link_preview=False,
+                    file=photos,
+                    buttons=button,
+                )
+                msg = MSG[0] if isinstance(MSG, list) else MSG
+                if not is_pic_alone and text and button:
+                    await msg.reply(
+                        text,
+                        link_preview=False,
+                        buttons=button,
+                    )
+
+                for path in photos:
+                    os.remove(path)
+
+            except Exception as er:
+                LOGGER.exception(er)
+        except FloodWaitError as fw:
+            LOGGER.exception(fw)
+            await asyncio.sleep(fw.seconds + 10)
+        except Exception as er:
+            LOGGER.exception(er)
+    
     async def on_request_error(self, status_code):
         LOGGER.error(f"Stream Encountered HTTP Error: {status_code}")
         if status_code == 420:
@@ -234,10 +224,17 @@ class TgStreamer(AsyncStreamingClient):
             + "/response-codes to know about error code."
         )
 
+    async def on_disconnect(self):
+        LOGGER.warning("<<---|| Stream Disconnected. ||--->>")
+
+
     async def on_connection_error(self):
-        LOGGER.info("<<---|| Connection Error ||--->>")
+        LOGGER.error("<<---|| Connection Error ||--->>")
+
+    async def on_exception(self, exception):
+        LOGGER.exception(exception)
 
     async def on_errors(self, errors):
         LOGGER.debug(errors)
         for error in errors:
-            LOGGER.info(f"{error['resource_id']}: {error['detail']}")
+            LOGGER.error(f"{error['resource_id']}: {error['detail']}")
