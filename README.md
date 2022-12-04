@@ -27,10 +27,17 @@
 ## Deploy to Heroku
 - To Deploy to Heroku, follow this [Guide](./Guides/deploy-heroku.md)
 
+## Showcase
+- Add the Channel/Group username to which you are streaming and the targeted usernames...
+
+| Group | Twitter Users |
+| ----- | ------------- |
+| [@futurecodeschat](https://t.me/futurecodeschat) | `Neelabhtoons` |
+
 ## Contributing
 - Any sort of Contributions are welcomed!
 
-> Thanks all, who have stared the project and found it helpful. ❤️
+> Thanks to everyone who has starred the project, I hope you found it helpful! ❤️
 
 ## Support Chat
 - Telegram Group - [@FutureCodesChat](https://t.me/FutureCodesChat)
