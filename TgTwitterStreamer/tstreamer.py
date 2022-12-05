@@ -240,6 +240,6 @@ class TgStreamer(AsyncStreamingClient):
         LOGGER.exception(exception)
 
     async def on_errors(self, errors):
-        LOGGER.debug(errors)
-        for error in errors:
-            LOGGER.error(f"{error['resource_id']}: {error['detail']}")
+        LOGGER.error(errors)
+        #for error in errors:
+        #    LOGGER.error(f"{error['resource_id']}: {error['detail']}")
