@@ -40,12 +40,14 @@ These Two Vars can be Taken from my.telegram.org
 - ` - TRACK_WORDS - Track word overall on Twitter, overlapping 'TRACK_USERS' Var. (eg - 'hello | bye | another word')`
 - ` - TAKE_REPLIES - to Take Tweets Which are reply to User. Fill (True/False).`
 - ` - TAKE_RETWEETS - To Take Tweets, which are Retweets, done by User. Fill (True/False)`
+- ` - MEDIA_ONLY - Only include tweets containing media.`
 - ` - CUSTOM_TEXT - Custom Tweet Format` - [Click Here for Detailed Info](./formatting.md)
 - ` - REPLY_FORMAT - format of REPLY_TAG (If tweet is in reply to some post.) (can contain REPLY_URL in it)`
 - ` - BUTTON_TITLE - text to show on Button`
 - ` - DISABLE_BUTTON - Disable the button attached to the posts. Fill True/False`
 - ` - CUSTOM_BUTTON - Custom Url button to attach to Post.`
-- ` - LANGUAGES - list of languages, in which tweet should be return. (eg - 'en ru')`
+- ` - LANGUAGES - list of languages, in which tweet should be return. (eg - 'en ru') (default- en)`
+    `(set to 'None' to disable language filter.)`
 - ` - DISABLE_START - Disable '/start' message.`
 - ` - MUST_INCLUDE - word which should be included in Tweet Text.`
 - ` - EXCLUDE - word which should be excluded in Tweet Text.`

@@ -2,7 +2,6 @@
 # Github.com/New-dev0/TgTwitterStreamer
 # GNU General Public License v3.0
 
-from email.policy import default
 from decouple import config
 
 
@@ -59,6 +58,8 @@ class Var:
     TAKE_REPLIES = config("TAKE_REPLIES", default=True, cast=bool)
     # Whether to Take Retweets or not.
     TAKE_RETWEETS = config("TAKE_RETWEETS", default=False, cast=bool)
+    # Whether to just include tweets containing media.
+    MEDIA_ONLY = config("MEDIA_ONLY", default=False, cast=bool)
 
     # An Addition word checking filters.
     MUST_INCLUDE = config("MUST_INCLUDE", default=None)
@@ -72,7 +73,9 @@ class Var:
     AUTO_PIN = config("AUTO_PIN", default=False, cast=bool)
 
     # Filter Language of Tweets
-    LANGUAGES = config("LANGUAGES", default=None)
+    LANGUAGES = config("LANGUAGES", default="en")
+    if LANGUAGES == "None":
+        LANGUAGES = None
 
     MEDIA_DL_PATH = config("MEDIA_DL_PATH", default="media")
     LOG_FILE = config("LOG_FILE", default="Stream.log")

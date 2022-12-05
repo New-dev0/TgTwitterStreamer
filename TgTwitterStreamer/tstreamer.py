@@ -81,9 +81,6 @@ class TgStreamer(AsyncStreamingClient):
         users = include.get("users", [])
         user = users[0]
 
-        if not Var.TAKE_REPLIES and tweet.in_reply_to_user_id:
-            return
-
         pic = self.get_urls(include.get("media"))
         hashtags = None
         _entities = tweet.get("entities", {})

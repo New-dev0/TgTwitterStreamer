@@ -43,6 +43,10 @@ def make_rules() -> str:
     rule = ""
     if not Var.TAKE_RETWEETS:
         rule += "-is:retweet"
+    if not Var.TAKE_REPLIES:
+        rule += " -is:reply"
+    if Var.MEDIA_ONLY:
+        rule += " has:media"
     if TRACK_USERS:
         if len(TRACK_USERS) == 1:
             rule += f" from:{TRACK_USERS[0]}"
@@ -54,7 +58,7 @@ def make_rules() -> str:
         rule += " -".join(Var.EXCLUDE)
     if Var.LANGUAGES:
         rule += " (" + " OR ".join(f"lang:{lang}" for lang in Var.LANGUAGES) + ")"
-    return rule
+    return rule.strip()
 
 
 if __name__ == "__main__":
