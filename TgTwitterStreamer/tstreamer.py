@@ -34,7 +34,13 @@ class TgStreamer(AsyncStreamingClient):
         List = []
         for media in (medias or []):
             if media.data.get("variants"):
-                link = media.data["variants"][0]["url"]
+                link = None
+                for variant in media.data['variants']:
+                    if variant['content_type'] == "video/mp4":
+                        link = variant['url']
+                        break
+                if not link:
+                    link = media.data["variants"][0]["url"]
             else:
                 link = media.url or media.preview_image_url
             if link and not "tweet_video_thumb" in link:
@@ -183,6 +189,8 @@ class TgStreamer(AsyncStreamingClient):
         except (WebpageCurlFailedError, MediaInvalidError) as er:
             LOGGER.warning(f"Handling <{er}>")
             try:
+                if is_pic_alone:
+                    photos = [photos]
                 photos = await download_from_url(photos)
                 MSG = await Client.send_message(
                     chat,
