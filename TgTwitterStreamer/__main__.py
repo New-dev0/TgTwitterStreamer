@@ -82,18 +82,25 @@ if __name__ == "__main__":
         if add_rule:
             LOGGER.debug("Applying rule: " + rule)
             await Stream.add_rules(StreamRule(rule))
-        Stream.filter(
-            expansions=[
-                "author_id",
-                "attachments.media_keys",
-                "referenced_tweets.id.author_id",
-            ],
-            user_fields=["profile_image_url", "name", "username"],
-            tweet_fields=["entities", "in_reply_to_user_id", "referenced_tweets"],
-            media_fields=["variants", "preview_image_url", "url"],
-        )
+        
+        _MAX_RECONNECT = Var.MAX_RECONNECT # default: 20
+        _RECONNECT_COUNT = 0
+
+        while True:
+            if Stream.task:
+                _RECONNECT_COUNT += 1
+                if _RECONNECT_COUNT > _MAX_RECONNECT:
+                    break
+                LOGGER.info(f"Reconnecting [{_RECONNECT_COUNT}]..")
+            try:
+                Stream.start()
+                await Stream.task
+            except (KeyboardInterrupt):
+                break
+            except Exception as er:
+                LOGGER.exception(er)
 
     Client.loop.run_until_complete(run())
 
-    with Client:
-        Client.run_until_disconnected()  # RUN CLIENT
+#    with Client:
+#        Client.run_until_disconnected()  # RUN CLIENT

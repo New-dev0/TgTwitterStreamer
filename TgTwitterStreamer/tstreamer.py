@@ -32,12 +32,12 @@ class TgStreamer(AsyncStreamingClient):
 
     def get_urls(self, medias):
         List = []
-        for media in (medias or []):
+        for media in medias or []:
             if media.data.get("variants"):
                 link = None
-                for variant in media.data['variants']:
-                    if variant['content_type'] == "video/mp4":
-                        link = variant['url']
+                for variant in media.data["variants"]:
+                    if variant["content_type"] == "video/mp4":
+                        link = variant["url"]
                         break
                 if not link:
                     link = media.data["variants"][0]["url"]
@@ -81,11 +81,24 @@ class TgStreamer(AsyncStreamingClient):
             return CUSTOM_FORMAT.format(**kwargs)
 
     async def on_response(self, response):
+        try:
+            await self._on_response(response)
+        except Exception as er:
+            LOGGER.error("Error while processing response.")
+            LOGGER.error(response)
+            LOGGER.exception(er)
+
+    async def _on_response(self, response):
         include = response.includes
         LOGGER.debug(f"include, {include}")
         tweet = response.data
         users = include.get("users", [])
-        user = users[0]
+        try:
+            user = users[0]
+        except IndexError:
+            LOGGER.error("Could'nt get Sender due to unknown reason. Remaining data:")
+            LOGGER.error(f"include: {include}, tweet: {tweet}")
+            return
 
         pic = self.get_urls(include.get("media"))
         hashtags = None
@@ -217,7 +230,7 @@ class TgStreamer(AsyncStreamingClient):
             await asyncio.sleep(fw.seconds + 10)
         except Exception as er:
             LOGGER.exception(er)
-    
+
     async def on_request_error(self, status_code):
         LOGGER.error(f"Stream Encountered HTTP Error: {status_code}")
         if status_code == 420:
@@ -232,14 +245,25 @@ class TgStreamer(AsyncStreamingClient):
     async def on_disconnect(self):
         LOGGER.warning("<<---|| Stream Disconnected. ||--->>")
 
+    def start(self):
+        self.filter(
+            expansions=[
+                "author_id",
+                "attachments.media_keys",
+                "referenced_tweets.id.author_id",
+            ],
+            user_fields=["profile_image_url", "name", "username"],
+            tweet_fields=["entities", "in_reply_to_user_id", "referenced_tweets"],
+            media_fields=["variants", "preview_image_url", "url"],
+        )
 
     async def on_connection_error(self):
         LOGGER.error("<<---|| Connection Error ||--->>")
 
-    async def on_exception(self, exception):
-        LOGGER.exception(exception)
-
     async def on_errors(self, errors):
         LOGGER.error(errors)
-        #for error in errors:
-        #    LOGGER.error(f"{error['resource_id']}: {error['detail']}")
+        for error in errors:
+            try:
+                LOGGER.error(f"{error['resource_id']}: {error['detail']}")
+            except KeyError:
+                LOGGER.error(error)

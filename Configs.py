@@ -79,3 +79,4 @@ class Var:
 
     MEDIA_DL_PATH = config("MEDIA_DL_PATH", default="media")
     LOG_FILE = config("LOG_FILE", default="Stream.log")
+    MAX_RECONNECT = config("MAX_RECONNECT", cast=int, default=20)
