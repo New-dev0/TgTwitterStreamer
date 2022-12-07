@@ -182,12 +182,11 @@ class TgStreamer(AsyncStreamingClient):
         if Var.AUTO_RETWEET:
             await self._do_retweet(tweet["id"])
 
-        if Var.AUTO_PIN and MSG:
-            single_msg = MSG if not isinstance(MSG, list) else MSG[0]
-            await self._pin(single_msg)
 
     async def send_tweet(self, chat, text, photos, button, is_pic_alone):
         textmsg = text if (is_pic_alone or Var.DISABLE_BUTTON) else None
+        MSG = None
+
         try:
             MSG = await Client.send_message(
                 chat,
@@ -230,6 +229,10 @@ class TgStreamer(AsyncStreamingClient):
             await asyncio.sleep(fw.seconds + 10)
         except Exception as er:
             LOGGER.exception(er)
+
+        if Var.AUTO_PIN and MSG:
+            single_msg = MSG if not isinstance(MSG, list) else MSG[0]
+            await self._pin(single_msg)
 
     async def on_request_error(self, status_code):
         LOGGER.error(f"Stream Encountered HTTP Error: {status_code}")
