@@ -81,8 +81,13 @@ if __name__ == "__main__":
                 await Stream.delete_rules(del_ids)
         if add_rule:
             LOGGER.debug("Applying rule: " + rule)
-            await Stream.add_rules(StreamRule(rule))
-        
+            rules = (await Stream.add_rules(StreamRule(rule))).data
+        else:
+            rules = old_rules
+
+        Stream.rule_ids = [rule.id for rule in rules]
+        LOGGER.debug(f"filtering rules: {Stream.rule_ids}")
+
         _MAX_RECONNECT = Var.MAX_RECONNECT # default: 20
         _RECONNECT_COUNT = 0
 

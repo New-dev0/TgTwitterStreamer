@@ -25,7 +25,10 @@ LOGGER = logging.getLogger("TgTwitterStreamer")
 
 if Var.LOG_FILE:
     if not _DEBUG and os.path.exists(Var.LOG_FILE):
-        os.remove(Var.LOG_FILE)
+        try:
+            os.remove(Var.LOG_FILE)
+        except Exception as er:
+            LOGGER.error(er)
     LOGGER.addHandler(logging.FileHandler(Var.LOG_FILE, encoding="utf-8"))
 
 LOGGER.debug("Starting in debug mode..")

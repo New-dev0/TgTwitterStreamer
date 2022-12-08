@@ -27,6 +27,8 @@ from .functions import download_from_url
 
 
 class TgStreamer(AsyncStreamingClient):
+    rule_ids = []
+
     async def on_connect(self):
         LOGGER.info("<<<---||| Stream Connected |||--->>>")
 
@@ -89,6 +91,10 @@ class TgStreamer(AsyncStreamingClient):
             LOGGER.exception(er)
 
     async def _on_response(self, response):
+        rule_ids = [rule.id for rule in response.matching_rules]
+        if not any((rule in self.rule_ids) for rule in rule_ids):
+            LOGGER.error("Unmatched Rule Identified, possibly there maybe multiple connections!")
+            return
         include = response.includes
         LOGGER.debug(f"include, {include}")
         tweet = response.data
@@ -264,7 +270,6 @@ class TgStreamer(AsyncStreamingClient):
         LOGGER.error("<<---|| Connection Error ||--->>")
 
     async def on_errors(self, errors):
-        LOGGER.error(errors)
         for error in errors:
             try:
                 LOGGER.error(f"{error['resource_id']}: {error['detail']}")
