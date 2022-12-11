@@ -88,7 +88,7 @@ if __name__ == "__main__":
         Stream.rule_ids = [rule.id for rule in rules]
         LOGGER.debug(f"filtering rules: {Stream.rule_ids}")
 
-        _MAX_RECONNECT = Var.MAX_RECONNECT # default: 20
+        _MAX_RECONNECT = Var.MAX_RECONNECT  # default: 20
         _RECONNECT_COUNT = 0
 
         while True:

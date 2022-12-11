@@ -22,6 +22,7 @@ from . import (
     LOGGER,
     CUSTOM_BUTTONS,
     CUSTOM_FORMAT,
+    CUSTOM_TRACK_CHAT,
 )
 from .functions import download_from_url
 
@@ -93,7 +94,9 @@ class TgStreamer(AsyncStreamingClient):
     async def _on_response(self, response):
         rule_ids = [rule.id for rule in response.matching_rules]
         if not any((rule in self.rule_ids) for rule in rule_ids):
-            LOGGER.error("Unmatched Rule Identified, possibly there maybe multiple connections!")
+            LOGGER.error(
+                "Unmatched Rule Identified, possibly there maybe multiple connections!"
+            )
             return
         include = response.includes
         LOGGER.debug(f"include, {include}")
@@ -112,7 +115,7 @@ class TgStreamer(AsyncStreamingClient):
         if _entities and _entities.get("hashtags"):
             hashtags = " ".join(f"#{a['tag']}" for a in _entities["hashtags"])
 
-        username = user["username"]
+        username = user["username"].lower()
         sender_url = "https://twitter.com/" + username
         TWEET_LINK = f"{sender_url}/status/{tweet['id']}"
 
@@ -168,7 +171,7 @@ class TgStreamer(AsyncStreamingClient):
         if not pic:
             pic = None
 
-        button, MSG = None, None
+        button = None
 
         if CUSTOM_BUTTONS:
             button = CUSTOM_BUTTONS
@@ -179,8 +182,22 @@ class TgStreamer(AsyncStreamingClient):
         is_pic_alone = not pic or len(pic) == 1
         _photos = pic[0] if (pic and is_pic_alone) else pic
 
-        for chat in Var.TO_CHAT:
-            await self.send_tweet(chat, text, _photos, button, is_pic_alone)
+        _c_chats = CUSTOM_TRACK_CHAT.get(username, {})
+        if _c_chats and _c_chats["chats"]:
+            chats = _c_chats["chats"]
+        else:
+            chats = Var.TO_CHAT
+
+        for i, chat in enumerate(chats):
+            LOGGER.debug(f"{i+1}. sending tweet from {username} to {chat}.")
+            await self.send_tweet(
+                chat,
+                text,
+                _photos,
+                button,
+                is_pic_alone,
+                topic_id=_c_chats.get("topic_id") if i == 0 else None,
+            )
 
         if Var.AUTO_LIKE:
             await self._favorite(tweet["id"])
@@ -188,8 +205,7 @@ class TgStreamer(AsyncStreamingClient):
         if Var.AUTO_RETWEET:
             await self._do_retweet(tweet["id"])
 
-
-    async def send_tweet(self, chat, text, photos, button, is_pic_alone):
+    async def send_tweet(self, chat, text, photos, button, is_pic_alone, topic_id=None):
         textmsg = text if (is_pic_alone or Var.DISABLE_BUTTON) else None
         MSG = None
 
@@ -198,6 +214,7 @@ class TgStreamer(AsyncStreamingClient):
                 chat,
                 textmsg,
                 link_preview=False,
+                reply_to=topic_id,
                 file=photos,
                 buttons=button,
             )
@@ -214,6 +231,7 @@ class TgStreamer(AsyncStreamingClient):
                     chat,
                     textmsg,
                     link_preview=False,
+                    reply_to=topic_id,
                     file=photos,
                     buttons=button,
                 )

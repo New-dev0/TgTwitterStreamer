@@ -75,17 +75,22 @@ if not Var.CUSTOM_TEXT:
 if Var.LANGUAGES:
     Var.LANGUAGES = Var.LANGUAGES.split()
 
-# Username are easy to Fill and can easy be recognized that Unqiue Chat ids.
-# And Ids should be in int form..
-if Var.TO_CHAT:
+
+def parse_chats(chats):
     _chats = []
-    for chat in Var.TO_CHAT.split():
+    for chat in chats:
         try:
             chat = int(chat)
         except ValueError:
             pass
         _chats.append(chat)
-    Var.TO_CHAT = _chats
+    return _chats
+
+
+# Username are easy to Fill and can easy be recognized that Unqiue Chat ids.
+# And Ids should be in int form..
+if Var.TO_CHAT:
+    Var.TO_CHAT = parse_chats(Var.TO_CHAT.split())
 else:
     LOGGER.info("Please Add 'TO_CHAT' Var to Use TgTwitterStreamer!")
     LOGGER.info(
@@ -111,10 +116,28 @@ if Var.CUSTOM_BUTTON:
 
 LOGGER.info("<<--- Setting Up Bot ! --->>")
 
+CUSTOM_TRACK_CHAT = {}
+TRACK_USERS = []
 
 if Var.TRACK_USERS:
-    TRACK_USERS = Var.TRACK_USERS.strip().split(" ")
+    _TRACK_USERS = Var.TRACK_USERS.strip().split(" ")
+    for user in _TRACK_USERS:
+        if "-" in user:
+            split = user.split("-")
+            last_elm = split[len(split) - 1]
+            last_topid = last_elm.isdigit()
+            if len(split) > 1:
+                msg_id = None
+                user = split[0].lower()
+                chats = split[1 : len(split) - (1 if last_topid else 0)]
+                if last_topid:
+                    msg_id = int(last_elm)
+                CUSTOM_TRACK_CHAT[user] = {"chats": chats, "topic_id": msg_id}
+        TRACK_USERS.append(user)
 
+LOGGER.debug(f"custom chats: {CUSTOM_TRACK_CHAT}")
+TRACK_USERS = list(set(TRACK_USERS))
+LOGGER.debug(f"track users: {TRACK_USERS}")
 
 if Var.TRACK_WORDS:
     TRACK_WORDS = Var.TRACK_WORDS.split(" | ")
