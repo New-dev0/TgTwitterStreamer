@@ -93,7 +93,7 @@ class TgStreamer(AsyncStreamingClient):
 
     async def _on_response(self, response):
         rule_ids = [rule.id for rule in response.matching_rules]
-        if not any((rule in self.rule_ids) for rule in rule_ids):
+        if self.rule_ids and not any((rule in self.rule_ids) for rule in rule_ids):
             LOGGER.error(
                 "Unmatched Rule Identified, possibly there maybe multiple connections!"
             )
@@ -206,7 +206,7 @@ class TgStreamer(AsyncStreamingClient):
             await self._do_retweet(tweet["id"])
 
     async def send_tweet(self, chat, text, photos, button, is_pic_alone, topic_id=None):
-        textmsg = text if (is_pic_alone or Var.DISABLE_BUTTON) else None
+        textmsg = text if (is_pic_alone or Var.DISABLE_BUTTON) else ""
         MSG = None
 
         try:
@@ -255,7 +255,7 @@ class TgStreamer(AsyncStreamingClient):
             LOGGER.exception(er)
 
         if Var.AUTO_PIN and MSG:
-            single_msg = MSG if not isinstance(MSG, list) else MSG[0]
+            single_msg = MSG[0] if isinstance(MSG, list) else MSG
             await self._pin(single_msg)
 
     async def on_request_error(self, status_code):
