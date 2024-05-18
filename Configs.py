@@ -13,26 +13,19 @@ class Var:
     # Telegram Bot's token
     BOT_TOKEN = config("BOT_TOKEN", None)
 
-    # Twitter Vars
-    BEARER_TOKEN = config("BEARER_TOKEN", None)
-    CONSUMER_KEY = config("CONSUMER_KEY", None)
-    CONSUMER_SECRET = config("CONSUMER_SECRET", None)
-    ACCESS_TOKEN = config("ACCESS_TOKEN", None)
-    ACCESS_TOKEN_SECRET = config("ACCESS_TOKEN_SECRET", None)
-
     # Telegram Chat id(s), where to send Tweets
     TO_CHAT: str = config("TO_CHAT", None)
 
     # Username of Twitter User, whose Tweets should be tracked
     # and posted to chat filled in TO_CHAT.
-    TRACK_USERS = config("TRACK_USERS", None)
+    TRACK_USERS = config("TRACK_USERS", default="")
 
     # TRACK_WORDS: To filter Tweets by word
     # Should be seperated by "|"
-    TRACK_WORDS = config("TRACK_WORDS", None)
+    TRACK_WORDS = config("TRACK_WORDS", default="")
 
     # Custom Text format to be used, while sending Tweets.
-    CUSTOM_TEXT = config("CUSTOM_TEXT", None)
+    CUSTOM_TEXT = config("CUSTOM_TEXT", default="")
     # Text to Display on Button, Attached to Message Posted on Telegram.
     BUTTON_TITLE = config("BUTTON_TITLE", "View on Twitter🔗")
     # Set DISABLE_BUTTON to True, to disable that Button.
@@ -67,11 +60,6 @@ class Var:
     if EXCLUDE:
         EXCLUDE = EXCLUDE.split("|")
 
-    # Automations
-    AUTO_LIKE = config("AUTO_LIKE", default=False, cast=bool)
-    AUTO_RETWEET = config("AUTO_RETWEET", default=False, cast=bool)
-    AUTO_PIN = config("AUTO_PIN", default=False, cast=bool)
-
     # Filter Language of Tweets
     LANGUAGES = config("LANGUAGES", default="en")
     if LANGUAGES == "None":
@@ -79,4 +67,14 @@ class Var:
 
     MEDIA_DL_PATH = config("MEDIA_DL_PATH", default="media")
     LOG_FILE = config("LOG_FILE", default="Stream.log")
-    MAX_RECONNECT = config("MAX_RECONNECT", cast=int, default=20)
+
+    TWITTER_USERNAME = config("TWITTER_USERNAME", default="")
+    TWITTER_PASSWORD = config("TWITTER_PASSWORD", default="")
+    ACCOUNTS_FILE = config("ACCOUNTS_FILE", default="")
+
+    DELAY_MINUTES = config("DELAY_MINUTES", default=20, cast=int)
+    CACHE_FILE = config("CACHE_FILE", default="cache.json")
+    TWITTER_SESSION_PATH = config("TWITTER_SESSION_PATH", default="")
+    TWEET_FETCH_LIMIT = config("TWEET_FETCH_LIMIT", cast=int, default=10)
+    SEND_SLEEP = config("SEND_SLEEP", cast=int, default=5)
+    WAIT_DELAY = config("WAIT_DELAY", cast=int, default=60)
