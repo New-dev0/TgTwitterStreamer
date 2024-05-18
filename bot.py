@@ -322,7 +322,7 @@ class TgTwitterStreamer:
 sched = AsyncIOScheduler()
 streamer = TgTwitterStreamer()
 
-sched.add_job(streamer.fetchNewTweets, "interval", minutes=Var.DELAY_MINUTES * 60)
+sched.add_job(streamer.fetchNewTweets, "interval", minutes=Var.DELAY_MINUTES)
 sched.start()
 
 if __name__ == "__main__":
