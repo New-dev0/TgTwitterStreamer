@@ -1,1 +1,1 @@
-worker: python3 -m TgTwitterStreamer
+worker: python3 bot.py

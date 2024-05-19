@@ -17,8 +17,12 @@
             "description": "Get it from https://my.telegram.org/apps",
             "value": "eb06d4abfb49dc3eeb1aeb98ae0f581e"
         },
-        "BEARER_TOKEN": {
-            "description": "Read New-dev0.github.io/tgtwitterbot to Know About it.",
+        "TWITTER_USERNAME": {
+            "description": "Twitter username.",
+            "value": ""
+        },
+        "TWITTER_PASSWORD": {
+            "description": "Twitter password.",
             "value": ""
         },
         "TRACK_USERS": {
