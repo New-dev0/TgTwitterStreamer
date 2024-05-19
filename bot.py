@@ -136,12 +136,16 @@ class TgTwitterStreamer:
         with open(Var.CACHE_FILE, "w") as f:
             json.dump(data, f)
 
-    async def sendToChats(self, message, thumb=None):
-        print(message)
-
+    async def sendToChats(self, message, thumb=None, button=None):
         for chat in Var.TO_CHAT:
             try:
-                await Client.send_message(chat, message, file=thumb)
+                await Client.send_message(
+                    chat,
+                    message,
+                    file=thumb,
+                    buttons=button,
+                    link_preview=Var.LINK_PREVIEW,
+                )
             except Exception as er:
                 LOGS.exception(er)
             await asyncio.sleep(Var.SEND_SLEEP)
@@ -218,6 +222,9 @@ class TgTwitterStreamer:
                     userInfo = (
                         result.get("core", {}).get("user_results", {}).get("result", {})
                     ).get("legacy")
+                    username = userInfo["screen_name"]
+                    if username.lower() != x.lower():
+                        continue
                     twId = legacyInfo["id_str"]
 
                     if initialId and initialId == twId:
@@ -290,9 +297,16 @@ class TgTwitterStreamer:
                         thumb = await downloadFile(photoFormat[0]["media_url_https"])
                         if not name:
                             name = thumb
-                    username = userInfo["screen_name"]
                     sender_url = "https://twitter.com/" + username
                     TWEET_LINK = f"{sender_url}/status/{legacyInfo['id_str']}"
+
+                    button = None
+
+                    if CUSTOM_BUTTONS:
+                        button = CUSTOM_BUTTONS
+
+                    elif not Var.DISABLE_BUTTON:
+                        button = Button.url(text=Var.BUTTON_TITLE, url=TWEET_LINK)
 
                     text = self.format_tweet(
                         SENDER=userInfo["name"],
@@ -310,13 +324,12 @@ class TgTwitterStreamer:
                         HASHTAGS=hashtags,
                         BOT_USERNAME=Client.SELF.username,
                     )
-                    await self.sendToChats(text, name)
+                    await self.sendToChats(text, name, button)
                     if name:
                         os.remove(name)
                 except Exception as er:
                     LOGS.exception(er)
             await asyncio.sleep(Var.WAIT_DELAY)
-                    
 
 
 sched = AsyncIOScheduler()

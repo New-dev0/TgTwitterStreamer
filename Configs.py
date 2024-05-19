@@ -78,3 +78,4 @@ class Var:
     TWEET_FETCH_LIMIT = config("TWEET_FETCH_LIMIT", cast=int, default=10)
     SEND_SLEEP = config("SEND_SLEEP", cast=int, default=5)
     WAIT_DELAY = config("WAIT_DELAY", cast=int, default=60)
+    LINK_PREVIEW = config("LINK_PREVIEW", default=False, cast=bool)
