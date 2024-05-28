@@ -235,9 +235,9 @@ class TgTwitterStreamer:
                         legacyInfo.get("extended_entities", {}).get("media", [])
                     )
                     hashtags = None
-                    if entities and entities.get("hashtags"):
+                    if legacyInfo["entities"] and legacyInfo["entities"].get("hashtags"):
                         hashtags = " ".join(
-                            f"#{a['tag']}" for a in entities["hashtags"]
+                            f"#{a['tag']}" for a in legacyInfo["entities"]["hashtags"]
                         )
 
                     extra_text = None
@@ -276,7 +276,7 @@ class TgTwitterStreamer:
                             async with ClientSession() as ses:
                                 request = await ses.get(ny)
                                 newurl = request.url
-                            text = text.replace(ny, newurl)
+                            text = text.replace(ny, str(newurl))
                     if videoFormat:
                         file = videoFormat[0]
                         Info = file.get("video_info")
